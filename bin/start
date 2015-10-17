@@ -14,4 +14,4 @@ if [ -e "$(ha_gateway_pidfile)" ]; then
 fi
 
 nohup bash -c "$DIR/run.sh" &>> $(ha_gateway_logdir)/ha_gateway.log &
-echo $! > $(ha_gateway_pidfile)
+echo -ne "$!" > $(ha_gateway_pidfile)
