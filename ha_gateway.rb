@@ -36,6 +36,13 @@ post '/leds' do
     api.update_color(*rgb)
   end
 
+  if params.include?('level')
+    hsl_color = Color::RGB(*api.current_color).to_hsl
+    hsl_color.luminosity = params['level'].to_i
+
+    api.update_color(*hsl_color.to_rgb)
+  end
+
   status 200
   body '{"success": true}'
 end
