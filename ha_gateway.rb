@@ -37,10 +37,12 @@ post '/leds' do
   end
 
   if params.include?('level')
-    hsl_color = Color::RGB(*api.current_color).to_hsl
+    hsl_color = Color::RGB.new(*api.current_color).to_hsl
     hsl_color.luminosity = params['level'].to_i
 
-    api.update_color(*hsl_color.to_rgb)
+    adjusted_rgb = hsl_color.to_rgb.to_a.map { |x| (x * 255).to_i }
+
+    api.update_color(*adjusted_rgb)
   end
 
   status 200
