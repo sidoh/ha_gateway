@@ -1,14 +1,32 @@
 require 'ledenet_api'
+require 'yaml'
 
 module HaGateway
   class ConfigProvider
     def hmac_key
-      File.read('config/hmac.key')
+      load_config['hmac_secret']
     end
 
     def ledenet_host
       LEDENET.discover_devices.first.ip
     end
+
+    def bravia_host
+      load_config['bravia_host']
+    end
+
+    def bravia_hw_addr
+      load_config['bravia_hw_addr']
+    end
+
+    def security_enabled?
+      load_config['require_hmac_signatures'] == true
+    end
+
+    private
+      def load_config
+        YAML.load_file('config/ha_gateway.yml')
+      end
   end
 
   class CachingConfigProvider

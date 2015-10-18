@@ -8,10 +8,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source $DIR/locate.sh
 
-if [ -e "$(ha_gateway_pidfile)" ]; then
-  echo "pidfile exists. run stop to kill it: $(ha_gateway_pidfile)"
+if [ ! -z "$(ha_gateway_locate)" ]; then
+  echo "process already running. run stop to kill it."
   exit 1
 fi
 
 nohup bash -c "$DIR/run.sh" &>> $(ha_gateway_logdir)/ha_gateway.log &
-echo -ne "$!" > $(ha_gateway_pidfile)
+echo -ne "$!" > "$(ha_gateway_pidfile)"
