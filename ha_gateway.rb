@@ -14,6 +14,8 @@ before do
   payload   = request.env['HTTP_X_SIGNATURE_PAYLOAD']
   signature = request.env['HTTP_X_SIGNATURE']
 
+  halt 403 if payload.nil? or timestamp.nil? or signature.nil?
+
   digest = OpenSSL::Digest.new('sha1')
   data = (payload + timestamp)
   hmac = OpenSSL::HMAC.hexdigest(digest, config_provider.hmac_key, data)
