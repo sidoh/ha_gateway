@@ -9,4 +9,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/locate.sh
 cd $DIR/..
 
-exec ruby ha_gateway.rb -p 8000 -o 0.0.0.0 >>$(ha_gateway_logdir)/ha_gateway.log
+bundle install
+
+exec bundle exec ruby ha_gateway.rb -p 8000 -o 0.0.0.0 >>$(ha_gateway_logdir)/ha_gateway.log
