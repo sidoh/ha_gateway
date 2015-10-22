@@ -1,8 +1,11 @@
 require 'sinatra'
+require 'sinatra/json'
+
 require 'ledenet_api'
 require 'bravtroller'
 require 'color'
 require 'openssl'
+require 'net/ping'
 
 require_relative 'config_provider'
 
@@ -17,19 +20,38 @@ before do
     payload   = request.env['HTTP_X_SIGNATURE_PAYLOAD']
     signature = request.env['HTTP_X_SIGNATURE']
 
-    halt 403 if payload.nil? or timestamp.nil? or signature.nil?
+    if [payload, timestamp, signature].any?(&:nil?)
+      logger.info "Access denied: incomplete signature params."
+      logger.info "timestamp = #{timestamp}, payload = #{payload}, signature = #{signature}"
+      halt 403
+    end
 
     digest = OpenSSL::Digest.new('sha1')
     data = (payload + timestamp)
     hmac = OpenSSL::HMAC.hexdigest(digest, config_provider.hmac_key, data)
 
-    halt 403 unless hmac == signature
-    halt 412 unless ((Time.now.to_i - 20) <= timestamp.to_i)
+    if hmac != signature
+      logger.info "Access denied: incorrect signature. Computed = '#{hmac}', provided = '#{signature}'"
+      halt 403
+    end
+
+    if ((Time.now.to_i - 20) > timestamp.to_i)
+      logger.info "Invalid parameter. Timestamp expired: #{timestamp}"
+      halt 412
+    end
   end
 end
 
+get '/tv' do
+  ping = Net::Ping::External.new(config_provider.bravia_host)
+  tv_status = ping.ping? ? 'on' : 'off'
+
+  status 200
+  json status: tv_status
+end
+
 post '/tv' do
-  puts params.inspect
+  logger.info params.inspect
 
   if params['status'] == 'on'
     bravtroller.power_on(config_provider.bravia_hw_addr)
@@ -39,7 +61,7 @@ post '/tv' do
 end
 
 post '/leds' do
-  puts params.inspect
+  logger.info params.inspect
 
   if params['status'] == 'on'
     ledenet_api.on

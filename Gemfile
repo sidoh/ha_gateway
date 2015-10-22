@@ -1,6 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'ledenet_api'
 gem 'sinatra'
+gem 'sinatra-json'
+
+gem 'ledenet_api'
 gem 'color'
+
 gem 'bravtroller'
+gem 'net-ping'
