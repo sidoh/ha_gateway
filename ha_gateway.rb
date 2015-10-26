@@ -12,7 +12,6 @@ require_relative 'config_provider'
 RGB_PARAMS = ['r', 'g', 'b']
 config_provider = HaGateway::CachingConfigProvider.new(HaGateway::ConfigProvider.new)
 ledenet_api = LEDENET::Api.new(config_provider.ledenet_host)
-bravtroller = Bravtroller::Remote.new(Bravtroller::Client.new(config_provider.bravia_host))
 
 before do
   if config_provider.security_enabled?
@@ -51,7 +50,7 @@ get '/tv' do
 end
 
 post '/tv' do
-  logger.info params.inspect
+  bravtroller = Bravtroller::Remote.new(Bravtroller::Client.new(config_provider.bravia_host))
 
   if params['status'] == 'on'
     bravtroller.power_on(config_provider.bravia_hw_addr)
