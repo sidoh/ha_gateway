@@ -13,5 +13,5 @@ if [ ! -z "$(ha_gateway_locate)" ]; then
   exit 1
 fi
 
-nohup bash -c "$DIR/run.sh" &>> $(ha_gateway_logdir)/ha_gateway.log &
+nohup bash -c "$DIR/run.sh" 2>&1 >> $(ha_gateway_logdir)/ha_gateway.log &
 echo -ne "$!" > "$(ha_gateway_pidfile)"

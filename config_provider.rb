@@ -7,6 +7,18 @@ module HaGateway
       load_config['hmac_secret']
     end
 
+    def camera_hostname
+      load_config['camera_hostname']
+    end
+
+    def camera_username
+      load_config['camera_username']
+    end
+
+    def camera_password
+      load_config['camera_password']
+    end
+
     def ledenet_host
       LEDENET.discover_devices.first.ip
     end

@@ -7,6 +7,8 @@ require 'color'
 require 'openssl'
 require 'net/ping'
 
+require 'open-uri'
+
 require_relative 'config_provider'
 
 RGB_PARAMS = ['r', 'g', 'b']
@@ -39,6 +41,26 @@ before do
       halt 412
     end
   end
+end
+
+post '/camera/command' do
+  def download(url, path)
+    File.open(path, "w") do |f|
+      IO.copy_stream(open(url), f)
+    end
+  end
+
+  params = {
+    usr: config_provider.camera_username,
+    pwd: config_provider.camera_password,
+    cmd: 'snapPicture2'
+  }
+  url = "http://#{config_provider.camera_hostname}/cgi-bin/CGIProxy.fcgi?#{URI.encode_www_form(params)}"
+
+  download(
+    url,
+    "/tmp/#{Time.now}.jpg"
+  )
 end
 
 get '/tv' do
