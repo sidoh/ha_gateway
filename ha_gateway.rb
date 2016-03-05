@@ -43,7 +43,7 @@ before do
   end
 end
 
-post '/camera/command' do
+get '/camera' do
   def download(url, path)
     File.open(path, "w") do |f|
       IO.copy_stream(open(url), f)
@@ -57,10 +57,8 @@ post '/camera/command' do
   }
   url = "http://#{config_provider.camera_hostname}/cgi-bin/CGIProxy.fcgi?#{URI.encode_www_form(params)}"
 
-  download(
-    url,
-    "/tmp/#{Time.now}.jpg"
-  )
+  content_type 'image/jpeg'
+  open(url) { |f| f.read }
 end
 
 get '/tv' do
