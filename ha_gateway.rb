@@ -15,6 +15,10 @@ RGB_PARAMS = ['r', 'g', 'b']
 config_provider = HaGateway::CachingConfigProvider.new(HaGateway::ConfigProvider.new)
 ledenet_api = LEDENET::Api.new(config_provider.ledenet_host)
 
+def camera_url(host, params)
+  "http://#{host}/cgi-bin/CGIProxy.fcgi?#{URI.encode_www_form(params)}"
+end
+
 before do
   if config_provider.security_enabled?
     timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
@@ -55,10 +59,31 @@ get '/camera' do
     pwd: config_provider.camera_password,
     cmd: 'snapPicture2'
   }
-  url = "http://#{config_provider.camera_hostname}/cgi-bin/CGIProxy.fcgi?#{URI.encode_www_form(params)}"
+  url = camera_url(config_provider.camera_hostname, params)
 
   content_type 'image/jpeg'
   open(url) { |f| f.read }
+end
+
+post '/camera/recording' do
+  camera_params = {
+    usr: config_provider.camera_username,
+    pwd: config_provider.camera_password,
+    cmd: 'setScheduleRecordConfig',
+    isEnable: 1,
+    recordLevel: 4,
+    spaceFullMode: 0,
+    isEnableAudio: 0
+  }
+
+  # The schedule is configured by 7 vars, one for each day of the week. The value
+  # for each var is a bitmask of length 48, with each bit representing a 30
+  # minute window. If, for example, the most significant bit is set to 1, then
+  # scheduled recording for that day is enabled from 00:00:00 -- 00:29:59.
+  value = params['enabled'] == 'true' ? (2**48 - 1) : 0
+  (0..6).each { |i| camera_params["schedule#{i}"] = value }
+
+  open(camera_url(config_provider.camera_hostname, camera_params))
 end
 
 get '/tv' do
