@@ -86,6 +86,17 @@ post '/camera/recording' do
   open(camera_url(config_provider.camera_hostname, camera_params))
 end
 
+post '/camera/location' do
+  camera_params = {
+    usr: config_provider.camera_username,
+    pwd: config_provider.camera_password,
+    cmd: 'ptzGotoPresetPoint',
+    name: params['preset']
+  }
+
+  open(camera_url(config_provider.camera_hostname, camera_params))
+end
+
 get '/tv' do
   ping = Net::Ping::External.new(config_provider.bravia_host)
   tv_status = ping.ping? ? 'on' : 'off'
