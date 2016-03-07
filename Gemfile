@@ -8,3 +8,4 @@ gem 'color'
 
 gem 'bravtroller'
 gem 'net-ping'
+gem 'thin'

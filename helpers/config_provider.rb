@@ -2,18 +2,18 @@ require 'ledenet_api'
 
 module HaGateway
   module ConfigProvider
+    @@config = nil
+
     def ledenet_host
       LEDENET.discover_devices.first.ip
     end
 
     def security_enabled?
-      require_hmac_signatures == true
+      config_value(:require_hmac_signatures) == true
     end
 
-    def method_missing(m)
-      v = config[m]
-      raise RuntimeError "Undefined config key: #{k}" unless v
-      v
+    def config_value(k)
+      config[k.to_s]
     end
 
     private

@@ -12,9 +12,9 @@ require 'open-uri'
 require_relative 'helpers/config_provider'
 
 module HaGateway
-  class App2 < Sinatra::Application
+  class App < Sinatra::Application
     before do
-      if ConfigProvider.security_enabled?
+      if security_enabled?
         timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
         payload   = request.env['HTTP_X_SIGNATURE_PAYLOAD']
         signature = request.env['HTTP_X_SIGNATURE']
@@ -27,7 +27,7 @@ module HaGateway
 
         digest = OpenSSL::Digest.new('sha1')
         data = (payload + timestamp)
-        hmac = OpenSSL::HMAC.hexdigest(digest, ConfigProvider.hmac_key, data)
+        hmac = OpenSSL::HMAC.hexdigest(digest, config_value[:hmac_key], data)
 
         if hmac != signature
           logger.info "Access denied: incorrect signature. Computed = '#{hmac}', provided = '#{signature}'"

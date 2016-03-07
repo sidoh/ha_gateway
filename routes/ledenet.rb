@@ -6,7 +6,7 @@ module HaGateway
 
     def ledenet_api
       if !@ledenet_api
-        host = HaGatway::ConfigProvider.ledenet_host
+        host = ledenet_host
         @ledenet_api = LEDENET::Api.new(host)
       end
       @ledenet_api

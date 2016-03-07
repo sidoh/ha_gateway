@@ -8,11 +8,13 @@ GEM
       easy_upnp (~> 0.1.6)
     builder (3.2.2)
     color (1.7.1)
+    daemons (1.2.3)
     easy_upnp (0.1.8)
       nokogiri (~> 1.6.6.2)
       nori (~> 2.6.0)
       rake
       savon (~> 2.11.1)
+    eventmachine (1.0.9.1)
     gyoku (1.3.1)
       builder (>= 2.1.2)
     httpi (2.4.1)
@@ -43,6 +45,10 @@ GEM
     sinatra-json (0.1.0)
       multi_json (~> 1.0)
       sinatra (~> 1.0)
+    thin (1.6.4)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (~> 1.0)
     tilt (2.0.1)
     wasabi (3.5.0)
       httpi (~> 2.0)
@@ -58,6 +64,7 @@ DEPENDENCIES
   net-ping
   sinatra
   sinatra-json
+  thin
 
 BUNDLED WITH
-   1.10.5
+   1.11.2
