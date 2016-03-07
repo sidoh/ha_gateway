@@ -11,4 +11,4 @@ cd $DIR/..
 
 bundle install
 
-exec bundle exec ruby ha_gateway.rb -p 8000 -o 0.0.0.0 >>$(ha_gateway_logdir)/ha_gateway.log
+exec bundle exec thin -p 8000 -R config.ru start >>$(ha_gateway_logdir)/ha_gateway.log
