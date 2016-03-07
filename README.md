@@ -29,8 +29,8 @@ This server starts on port 8000. Supported endpoints:
 
 1. `/leds`, responds to `POST` commands.
 2. `/tv`, responds to `GET` and `POST`.
-3. `/camera/<camera>`, responds to `POST`
-4. `/camera/<camera>/snapshot.jpg`, responds to `GET`.
+3. `/camera/:camera_name`, responds to `POST`
+4. `/camera/:camera_name/snapshot.jpg`, responds to `GET`.
 
 ## Supported parameters
 
@@ -39,6 +39,15 @@ This server starts on port 8000. Supported endpoints:
 1. `r`, `g`, `b` (all must be present to have an effect). Sets RGB value for LEDs. Range for each parameter should be [0,255].
 2. `status`. Sets on/off status. Supported values are "on" and "off".
 3. `level`. Sets the level/luminosity. Converts current color to HSL, adjusts level, and re-converts to RGB. Range should be [0,100].
+
+### POST /tv
+
+1. `status`. Can be `on` or `off`.
+
+### POST /camera/:camera\_name
+
+1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
+2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
 
 #### Example
 
