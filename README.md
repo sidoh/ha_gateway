@@ -29,12 +29,6 @@ The value of `X-Signature` is checked against the computed signature from the ot
 
 To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
 
-The shared secret should be placed in `./config/hmac.key`. Be sure that there are no spaces, newlines, or EOFs in the file! Generate a random one like this:
-
-```bash
-head -c 4096 /dev/urandom | md5sum | cut -d' ' -f1 | tr -d '\r\n' > config/hmac.key
-```
-
 ## Endpoint
 
 This server starts on port 8000. Supported endpoints:
