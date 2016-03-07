@@ -27,7 +27,7 @@ module HaGateway
 
         digest = OpenSSL::Digest.new('sha1')
         data = (payload + timestamp)
-        hmac = OpenSSL::HMAC.hexdigest(digest, config_value[:hmac_key], data)
+        hmac = OpenSSL::HMAC.hexdigest(digest, config_value(:hmac_key), data)
 
         if hmac != signature
           logger.info "Access denied: incorrect signature. Computed = '#{hmac}', provided = '#{signature}'"
