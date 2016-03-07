@@ -1,0 +1,28 @@
+# Whether or not requests should need to supply HMAC headers in order
+# to be processed. If this is set to false, any schmuck can access
+# this server.
+require_hmac_signatures: false
+
+# The secret to use when generating/validating HMAC signatures.
+hmac_secret: cakeisdelicious
+
+# If using the /tv endpoint, the hostname of the TV.
+bravia_host: mytv.mynetwork.net
+
+# When using the /tv endpoint, the MAC address of the TV. This is 
+# used for WOL.
+bravia_hw_addr: 00:71:cc:4a:9f:fb
+
+# Foscam Cameras when using the /camera endpoint.
+cameras:
+  # This will, for example, make the snapshot URL for this camera
+  # /camera/mycamera1/snapshot.jpg
+  mycamera1:
+    host: camera1.mynetwork.net
+    username: myusername
+    password: mypassword
+
+  mycamera2:
+    host: camera2.mynetwork.net
+    username: myusername
+    password: mypassword

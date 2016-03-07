@@ -5,6 +5,10 @@ This is a tiny home automation REST gateway. It currently controls:
 2. TV using [bravtroller](http://github.com/sidoh/bravtroller).
 3. Foscam IP camera.
 
+## Configuration
+
+Configurations for this server are located in `./config/ha_gateway.yml`. You can copy the example config from `./config/ha_gateway.yml.example`.
+
 ## Using
 
 You can start or stop the server with the provided scripts in `./bin`. Configure the port and device binding in `./bin/run.sh`.
