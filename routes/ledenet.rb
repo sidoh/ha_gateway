@@ -1,5 +1,3 @@
-require_relative '../helpers/config_provider'
-
 module HaGateway
   class App < Sinatra::Application
     RGB_PARAMS = ['r', 'g', 'b']
