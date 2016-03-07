@@ -1,9 +1,9 @@
 # ha_gateway
 This is a tiny home automation REST gateway. It currently controls:
 
-1. My LED strips using [ledenet_api](http://github.com/sidoh/ledenet_api).
-2. My TV using [bravtroller](http://github.com/sidoh/bravtroller).
-3. My Foscam IP camera
+1. LED strips using [ledenet_api](http://github.com/sidoh/ledenet_api).
+2. TV using [bravtroller](http://github.com/sidoh/bravtroller).
+3. Foscam IP camera.
 
 ## Using
 
