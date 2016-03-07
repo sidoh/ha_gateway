@@ -9,6 +9,8 @@ This is a tiny home automation REST gateway. It currently controls:
 
 Configurations for this server are located in `./config/ha_gateway.yml`. You can copy the example config from `./config/ha_gateway.yml.example`.
 
+Please see [this blog post](http://blog.christophermullins.net/2015/10/17/cheap-alternative-to-phillips-hue-led-strip/) for more details on the overall setup.
+
 ## Using
 
 You can start or stop the server with the provided scripts in `./bin`. Configure the port and device binding in `./bin/run.sh`.
@@ -26,6 +28,12 @@ This server uses [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authent
 The value of `X-Signature` is checked against the computed signature from the other headers. If this signature is not present or does not match, the server returns a `403: Unauthorized` error.
 
 To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
+
+The shared secret should be placed in `./config/hmac.key`. Be sure that there are no spaces, newlines, or EOFs in the file! Generate a random one like this:
+
+```bash
+head -c 4096 /dev/urandom | md5sum | cut -d' ' -f1 | tr -d '\r\n' > config/hmac.key
+```
 
 ## Endpoint
 
