@@ -2,6 +2,8 @@
 This is a tiny home automation REST gateway. It currently controls:
 
 1. My LED strips using [ledenet_api](http://github.com/sidoh/ledenet_api).
+2. My TV using [bravtroller](http://github.com/sidoh/bravtroller).
+3. My Foscam IP camera
 
 ## Using
 
@@ -26,6 +28,9 @@ To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` mus
 This server starts on port 8000. Supported endpoints:
 
 1. `/leds`, responds to `POST` commands.
+2. `/tv`, responds to `GET` and `POST`.
+3. `/camera/<camera>`, responds to `POST`
+4. `/camera/<camera>/snapshot.jpg`, responds to `GET`.
 
 ## Supported parameters
 
