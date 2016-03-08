@@ -29,9 +29,9 @@ The value of `X-Signature` is checked against the computed signature from the ot
 
 To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
 
-## Endpoint
+## Endpoints
 
-This server starts on port 8000. Supported endpoints:
+By default, this server starts on port 8000 (configure in `config.ru`). Supported endpoints:
 
 1. `POST /leds`
 2. `GET /tv`
