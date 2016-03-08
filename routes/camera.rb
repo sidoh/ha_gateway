@@ -1,8 +1,38 @@
+require 'uri'
+require 'net/http'
+
 module HaGateway
   class App < Sinatra::Application
     get '/camera/:camera_name/snapshot.jpg' do
       content_type 'image/jpeg'
-      camera_action(params['camera_name'], 'snapPicture2') { |f| f.read }
+      camera_action(params['camera_name'], 'snapPicture2')
+    end
+
+    get '/camera/:camera_name/stream.mjpeg' do
+      stream_boundary = 'ThisString'
+      content_type "multipart/x-mixed-replace;boundary=#{stream_boundary}"
+
+      start_time = Time.now
+      length = (params['length'] || -1).to_i
+
+      stream do |out|
+        buffer = ""
+
+        stream_action(params['camera_name'], 'GetMJStream') do |chunk|
+          if (i = chunk.index("--#{stream_boundary}")).nil?
+            buffer << chunk
+          else
+            out << buffer
+            out << chunk[0, i]
+
+            buffer = chunk[i..-1]
+          end
+
+          if length > -1 and (Time.now - start_time).to_i >= length
+            break
+          end
+        end
+      end
     end
 
     post '/camera/:camera_name' do
@@ -40,6 +70,12 @@ module HaGateway
     end
 
     private
+      def stream_action(camera_name, action, options = {}, &block)
+        options = { request_file: 'CGIStream.cgi' }.merge(options)
+
+        camera_action(camera_name, action, options, &block)
+      end
+
       def camera_action(camera_name, action, options = {}, &block)
         config = camera_config(camera_name)
         camera_params = {
@@ -48,8 +84,14 @@ module HaGateway
           cmd: action
         }.merge(options)
 
-        url = camera_url(config['host'], camera_params)
-        open(url, &block)
+        uri = URI(camera_url(config['host'], camera_params))
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          request = Net::HTTP::Get.new(uri)
+
+          http.request(request) do |response|
+            return response.read_body(&block)
+          end
+        end
       end
 
       def camera_config(camera_name)
@@ -63,7 +105,9 @@ module HaGateway
       end
 
       def camera_url(host, params)
-        "http://#{host}/cgi-bin/CGIProxy.fcgi?#{URI.encode_www_form(params)}"
+        file = params[:request_file] || 'CGIProxy.fcgi'
+
+        "http://#{host}/cgi-bin/#{file}?#{URI.encode_www_form(params)}"
       end
   end
 end
