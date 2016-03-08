@@ -33,13 +33,14 @@ To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` mus
 
 This server starts on port 8000. Supported endpoints:
 
-1. `/leds`, responds to `POST` commands.
-2. `/tv`, responds to `GET` and `POST`.
-3. `/camera/:camera_name`, responds to `POST`
-4. `/camera/:camera_name/snapshot.jpg`, responds to `GET`.
-5. `/camera/:camera_name/stream.mjpeg[?length=n]`, responds to `GET`. Parameter `length` limits the stream to `n` seconds.
+1. `POST /leds`
+2. `GET /tv`
+3. `POST /tv`
+4. `POST /camera/:camera_name`
+5. `GET /camera/:camera_name/snapshot.jpg`
+6. `GET /camera/:camera_name/stream.mjpeg[?length=n]`
 
-## Supported parameters
+## Supported parameters 
 
 ### POST /leds
 
@@ -55,6 +56,10 @@ This server starts on port 8000. Supported endpoints:
 
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
+
+### GET /camera/:camera\_name/stream.mjpeg
+
+1. `length`. Limits the length of the stream to the provided value (in seconds).
 
 #### Example
 
