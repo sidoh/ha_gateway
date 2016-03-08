@@ -37,6 +37,7 @@ This server starts on port 8000. Supported endpoints:
 2. `/tv`, responds to `GET` and `POST`.
 3. `/camera/:camera_name`, responds to `POST`
 4. `/camera/:camera_name/snapshot.jpg`, responds to `GET`.
+5. `/camera/:camera_name/stream.mjpeg[?length=n]`, responds to `GET`. Parameter `length` limits the stream to `n` seconds.
 
 ## Supported parameters
 
