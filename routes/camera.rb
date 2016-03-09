@@ -1,9 +1,17 @@
 require 'uri'
 require 'net/http'
 require 'open3'
+require 'crack'
 
 module HaGateway
   class App < Sinatra::Application
+    get '/camera/:camera_name/status.json' do
+      r = camera_action(params['camera_name'], 'getDevState')
+
+      content_type 'application/json'
+      Crack::XML.parse(r)['CGI_Result'].to_json
+    end
+
     get '/camera/:camera_name/snapshot.jpg' do
       content_type 'image/jpeg'
       r = camera_action(params['camera_name'], 'snapPicture2')
