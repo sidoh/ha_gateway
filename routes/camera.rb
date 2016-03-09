@@ -85,6 +85,23 @@ module HaGateway
         )
       end
 
+      if params['irMode']
+        camera_action(
+            params['camera_name'],
+            'setInfraLedConfig',
+            mode: params['irMode']
+        )
+      end
+
+      if params['ir']
+        action = params['ir'] == '1' ? 'openInfraLed' : 'closeInfraLed'
+
+        camera_action(
+            params['camera_name'],
+            action
+        )
+      end
+
       status 200
     end
 
