@@ -57,6 +57,10 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
 
+### GET /camera/:camera\_name/snapshot.jpg
+
+1. `rotate`. Rotates the image by the provided number of degrees. Requires imagemagick's `convert` to be accessible via commandline.
+
 ### GET /camera/:camera\_name/stream.mjpeg
 
 1. `length`. Limits the length of the stream to the provided value (in seconds).
