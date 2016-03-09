@@ -1,11 +1,22 @@
 require 'uri'
 require 'net/http'
+require 'open3'
 
 module HaGateway
   class App < Sinatra::Application
     get '/camera/:camera_name/snapshot.jpg' do
       content_type 'image/jpeg'
-      camera_action(params['camera_name'], 'snapPicture2')
+      r = camera_action(params['camera_name'], 'snapPicture2')
+
+      if params[:rotate] and (true if Float(params[:rotate]) rescue false)
+        Open3.popen3("convert - -rotate #{params[:rotate]} fd:1") do |i, o, e, t|
+          i.write(r)
+          i.close
+          r = o.read
+        end
+      end
+
+      r
     end
 
     get '/camera/:camera_name/stream.mjpeg' do
