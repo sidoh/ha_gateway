@@ -38,6 +38,7 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 3. `POST /tv`
 4. `POST /camera/:camera_name`
 5. `GET /camera/:camera_name/snapshot.jpg`
+5. `GET /camera/:camera_name/status.json`
 6. `GET /camera/:camera_name/stream.mjpeg`
 
 ## Supported parameters 
@@ -56,6 +57,8 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
+3. `irMode`. Sets infrared LEDs to auto mode when `0`, manual mode when `1`.
+4. `ir`. Turns on the infrared LEDs when `1`, off when `0`. Requires `irMode` to be set to `1`.
 
 ### GET /camera/:camera\_name/snapshot.jpg
 
