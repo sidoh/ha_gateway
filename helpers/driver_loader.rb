@@ -12,7 +12,7 @@ module HaGateway
       end
 
       device = devices[key]
-      driver = device[:driver]
+      driver = device['driver']
 
       begin
         require_relative "../drivers/#{type}/#{driver}"
@@ -20,7 +20,7 @@ module HaGateway
         raise RuntimeError, "Undefined driver type: #{type}/#{driver}"
       end
 
-      Object.const_get(driver.upcase).new(params)
+      Object.const_get("HaGateway::#{driver.capitalize}").new(params)
     end
   end
 end
