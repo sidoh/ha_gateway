@@ -8,7 +8,7 @@ module HaGateway
       model = 'HF-LPB100-ZJ200'
       LEDENET.
           discover_devices(expected_models: [model]).
-          reject { |x| x.model == model }.
+          reject { |x| x.model != model }.
           first
     end
 
