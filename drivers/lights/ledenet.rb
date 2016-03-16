@@ -4,7 +4,7 @@ require 'ledenet_api'
 require_relative 'light'
 
 module HaGateway
-  class Ledenet < Light
+  class LedenetDriver < Light
     attr_reader :params
 
     def initialize(params = {})
@@ -37,13 +37,6 @@ module HaGateway
     end
 
     private
-      def api
-        if !@api
-          @api = build_api
-        end
-        @api
-      end
-
       def build_api
         if params[:host]
           LEDENET::Api.new(params[:host])

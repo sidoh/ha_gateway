@@ -20,7 +20,7 @@ module HaGateway
         raise RuntimeError, "Undefined driver type: #{type}/#{driver}"
       end
 
-      Object.const_get("HaGateway::#{driver.capitalize}").new(params)
+      Object.const_get("HaGateway::#{driver.capitalize}Driver").new(device['params'])
     end
   end
 end
