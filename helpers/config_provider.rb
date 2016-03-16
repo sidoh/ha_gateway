@@ -5,7 +5,11 @@ module HaGateway
     @@config = nil
 
     def ledenet_host
-      LEDENET.discover_devices.first.ip
+      model = 'HF-LPB100-ZJ200'
+      LEDENET.
+          discover_devices(expected_models: [model]).
+          reject { |x| x.model == model }.
+          first
     end
 
     def security_enabled?
