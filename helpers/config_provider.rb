@@ -9,7 +9,8 @@ module HaGateway
       LEDENET.
           discover_devices(expected_models: [model]).
           reject { |x| x.model != model }.
-          first
+          first.
+          ip
     end
 
     def security_enabled?
