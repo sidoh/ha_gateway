@@ -1,12 +1,13 @@
 require 'color'
+require 'ledenet_api'
 
 require_relative 'light'
 
 module HaGateway
-  class Lednet < Light
+  class Ledenet < Light
     attr_reader :params
-    
-    def initialize(params)
+
+    def initialize(params = {})
       @params = params
     end
 
@@ -47,8 +48,9 @@ module HaGateway
         if params[:host]
           LEDENET::Api.new(params[:host])
         elsif params[:hw_addr]
+          normalized_addr = params[:hw_addr].gsub(':', '').upcase
           device = LEDENET.discover_devices.
-            reject { |x| x.hw_addr != params[:hw_addr] }.
+            reject { |x| x.hw_addr != normalized_addr }.
             first
 
           if device.nil?
