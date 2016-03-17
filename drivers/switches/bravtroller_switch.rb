@@ -9,7 +9,7 @@ module HaGateway
     end
 
     def on
-      bravtroller.power_on
+      bravtroller.power_on(params['hw_addr'])
     end
 
     def off
