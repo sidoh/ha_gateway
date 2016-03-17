@@ -33,7 +33,7 @@ module HaGateway
 
       adjusted_rgb = hsl_color.to_rgb.to_a.map { |x| (x * 255).to_i }
 
-      ledenet_api.update_color(*adjusted_rgb)
+      api.update_color(*adjusted_rgb)
     end
 
     private
