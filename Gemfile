@@ -6,6 +6,7 @@ gem 'sinatra-json'
 gem 'limitless-led'
 gem 'ledenet_api'
 gem 'color'
+gem 'easy_upnp'
 
 gem 'bravtroller'
 gem 'net-ping'
