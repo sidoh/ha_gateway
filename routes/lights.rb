@@ -11,7 +11,6 @@ module HaGateway
 
     post '/lights/:light_name' do
       driver = build_driver('lights', params['light_name'])
-      logger.info driver.inspect
 
       if params['status'] == 'on'
         driver.on
