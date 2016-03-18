@@ -29,7 +29,7 @@ module HaGateway
 
     def level(l)
       hsl_color = Color::RGB.new(*api.current_color).to_hsl
-      hsl_color.luminosity = params['level'].to_i
+      hsl_color.luminosity = l.to_i
 
       adjusted_rgb = hsl_color.to_rgb.to_a.map { |x| (x * 255).to_i }
 
