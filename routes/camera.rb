@@ -102,6 +102,14 @@ module HaGateway
         )
       end
 
+      if params['remoteAccess']
+        camera_action(
+            params['camera_name'],
+            'setP2PEnable',
+            enable: params['remoteAccess'] == 'true' ? '1' : '0'
+        )
+      end
+
       status 200
     end
 
