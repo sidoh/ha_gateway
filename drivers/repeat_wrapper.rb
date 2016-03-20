@@ -8,7 +8,7 @@ module HaGateway
     end
 
     def method_missing(m, *args, &block)
-      @times.times { @delegate.call(m, args, block) }
+      @times.times { @delegate.send(m, *args, &block) }
     end
   end
 end
