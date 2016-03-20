@@ -1,6 +1,7 @@
 require 'limitless_led'
 
 require_relative 'light'
+require_relative '../repeat_wrapper'
 
 module HaGateway
   class MilightDriver < Light
@@ -48,7 +49,13 @@ module HaGateway
           raise RuntimeError, "Must specify \"group\" parameter for Milight driver."
         end
 
-        LimitlessLed::Bridge.new(host: driver_params['host']).group(driver_params['group'].to_i)
+        api = LimitlessLed::Bridge.new(host: driver_params['host']).group(driver_params['group'].to_i)
+
+        if driver_params['repeat_packets']
+          api = HaGateway::RepeatWrapper.new(api, driver_params['repeat_packets'].to_i)
+        end
+
+        api
       end
   end
 end
