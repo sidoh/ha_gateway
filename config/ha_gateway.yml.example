@@ -6,12 +6,39 @@ require_hmac_signatures: false
 # The secret to use when generating/validating HMAC signatures.
 hmac_secret: cakeisdelicious
 
-# If using the /tv endpoint, the hostname of the TV.
-bravia_host: mytv.mynetwork.net
+# Lights are assumed to be RGB and support on/off, level, and RGB color.
+lights:
+  leds:
+    driver: ledenet
+    params:
+      hw_addr: 00:00:00:00:00:00
+  living_room:
+    driver: milight
+    params:
+      host: milight1
+      group: 1
 
-# When using the /tv endpoint, the MAC address of the TV. This is 
-# used for WOL.
-bravia_hw_addr: 00:71:cc:4a:9f:fb
+# Switches support on/off
+switches:
+  downstairs_tv:
+    driver: bravtroller_switch
+    params:
+      host: bravia
+  upstairs_tv:
+    driver: upnp_switch
+    params:
+      uuid: uuid:<uuid>
+      service: urn:schemas-upnp-org:service:AVTransport:1
+      actions:
+        "on":
+          method: Play
+          args:
+            InstanceID: 0
+            Speed: 1
+        "off":
+          method: Stop
+          args:
+            InstanceID: 0
 
 # Foscam Cameras when using the /camera endpoint.
 cameras:
