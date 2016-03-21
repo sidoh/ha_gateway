@@ -24,7 +24,20 @@ This configures ha_gateway to respond to `POST /lights/leds`. Parameters are doc
 
 Please see [this blog post](http://blog.christophermullins.net/2015/10/17/cheap-alternative-to-phillips-hue-led-strip/) for more details on the overall setup.
 
-## Using
+## Installing
+
+First, check out the project:
+
+```
+git clone git://github.com/sidoh/ha_gateway.git 
+cd ha_gateway
+```
+
+Copy or move the configuration example over and edit it to your liking:
+
+```
+cp config/ha_gateway.yml.example config/ha_gateway.yml
+```
 
 You can start or stop the server with the provided scripts in `./bin`. Configure the port and device binding in `./bin/run.sh`.
 
