@@ -18,6 +18,11 @@ lights:
       host: milight1
       group: 1
 
+      # I had intermittent issues where some proper subset of the bulbs in a
+      # group respond to commands. This setting repeats each command sent to
+      # the bridge (and therefore bulbs) the provided number of times.
+      repeat_packets: 10
+
 # Switches support on/off
 switches:
   downstairs_tv:
