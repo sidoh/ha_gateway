@@ -1,4 +1,5 @@
 require_relative 'config_provider'
+require_relative '../drivers/composite_driver'
 
 module HaGateway
   module DriverLoader
@@ -21,13 +22,20 @@ module HaGateway
       device = devices[key]
       driver = device['driver']
 
-      begin
-        require_relative "../drivers/#{type}/#{driver}"
-      rescue LoadError => e
-        raise RuntimeError, "Undefined driver type: #{type}/#{driver}"
+      driver_instance = if driver == 'composite'
+        composite_devices = device['params']['components'].map { |c| build_driver(type, c) }
+        CompositeDriver.new(type, *composite_devices)
+      else
+        begin
+          require_relative "../drivers/#{type}/#{driver}"
+        rescue LoadError => e
+          raise RuntimeError, "Undefined driver type: #{type}/#{driver}"
+        end
+
+        Object.const_get("HaGateway::#{camel_case(driver)}Driver").new(device['params'])
       end
 
-      @@drivers[driver_key(type, key)] = Object.const_get("HaGateway::#{camel_case(driver)}Driver").new(device['params'])
+      @@drivers[driver_key(type, key)] = driver_instance
     end
 
     def driver_key(type, key)

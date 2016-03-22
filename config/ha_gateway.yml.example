@@ -23,13 +23,27 @@ lights:
       # the bridge (and therefore bulbs) the provided number of times.
       repeat_packets: 10
 
+  # Combine devices with composite driver:
+  all_lights:
+    driver: composite
+    params:
+      components:
+        - leds
+        - living_room
+
 # Switches support on/off
 switches:
   downstairs_tv:
     driver: bravtroller_switch
     params:
-      host: bravia
-  upstairs_tv:
+      host: bravia1
+
+  upstairs_tv_screen:
+    driver: bravtroller_switch
+    params:
+      host: bravia2
+
+  upstairs_tv_kodi: &upstairs_tv_kodi
     driver: upnp_switch
     params:
       uuid: uuid:<uuid>
@@ -44,6 +58,19 @@ switches:
           method: Stop
           args:
             InstanceID: 0
+
+  upstairs_tv:
+    driver: mosaic
+    params:
+      constituents:
+        "on":
+          <<: *upstairs_tv_screen
+        "off":
+          driver: composite
+          params:
+            components:
+              - upstairs_tv_screen
+              - upstairs_tv_kodi
 
 # Foscam Cameras when using the /camera endpoint.
 cameras:
