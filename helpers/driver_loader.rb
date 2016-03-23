@@ -24,7 +24,7 @@ module HaGateway
 
       driver_instance = if driver == 'composite'
         composite_devices = device['params']['components'].map { |c| build_driver(type, c) }
-        CompositeDriver.new(type, *composite_devices)
+        CompositeDriver.new(type, device['params'], *composite_devices)
       else
         begin
           require_relative "../drivers/#{type}/#{driver}"
