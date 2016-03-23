@@ -13,3 +13,4 @@ gem 'net-ping'
 gem 'thin'
 
 gem 'crack'
+gem 'thread'

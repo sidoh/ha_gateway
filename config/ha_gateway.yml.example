@@ -27,6 +27,7 @@ lights:
   all_lights:
     driver: composite
     params:
+      parallelism: 2
       components:
         - leds
         - living_room
@@ -38,7 +39,7 @@ switches:
     params:
       host: bravia1
 
-  upstairs_tv_screen:
+  upstairs_tv_screen: &upstairs_tv_screen
     driver: bravtroller_switch
     params:
       host: bravia2
