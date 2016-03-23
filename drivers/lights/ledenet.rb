@@ -38,16 +38,16 @@ module HaGateway
 
     private
       def build_api
-        if params[:host]
-          LEDENET::Api.new(params[:host])
-        elsif params[:hw_addr]
-          normalized_addr = params[:hw_addr].gsub(':', '').upcase
+        if params['host']
+          LEDENET::Api.new(params['host'])
+        elsif params['hw_addr']
+          normalized_addr = params['hw_addr'].gsub(':', '').upcase
           device = LEDENET.discover_devices.
             reject { |x| x.hw_addr != normalized_addr }.
             first
 
           if device.nil?
-            raise RuntimeError, "Unable to find LEDENET device with hw addr: #{params[:hw_addr]}"
+            raise RuntimeError, "Unable to find LEDENET device with hw addr: #{params['hw_addr']}"
           end
 
           LEDENET::Api.new(device.ip)
