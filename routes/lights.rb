@@ -10,6 +10,12 @@ module HaGateway
     end
 
     post '/lights/:light_name' do
+      param :status, String, in: ['on', 'off'], transform: :downcase
+      param :r,      Integer, range: (0..255)
+      param :g,      Integer, range: (0..255)
+      param :b,      Integer, range: (0..255)
+      param :level,  Integer, range: (0..100)
+
       driver = build_driver('lights', params['light_name'])
 
       if params['status'] == 'on'

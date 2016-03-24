@@ -13,6 +13,8 @@ module HaGateway
     end
 
     get '/camera/:camera_name/snapshot.jpg' do
+      params :rotate, Integer, range: (0..360)
+
       content_type 'image/jpeg'
       r = camera_action(params['camera_name'], 'snapPicture2')
 
@@ -28,6 +30,8 @@ module HaGateway
     end
 
     get '/camera/:camera_name/stream.mjpeg' do
+      param :length, Integer, min: 1
+
       stream_boundary = 'ThisString'
       content_type "multipart/x-mixed-replace;boundary=#{stream_boundary}"
 
@@ -55,6 +59,12 @@ module HaGateway
     end
 
     post '/camera/:camera_name' do
+      param :recording,    Boolean
+      param :preset,       String
+      param :irMode,       String, in: ['0', '1']
+      param :ir,           String, in: ['0', '1']
+      param :remoteAccess, Boolean
+
       if params['recording']
         camera_params = {
           isEnable: 1,

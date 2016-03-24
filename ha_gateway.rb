@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/json'
+require 'sinatra/param'
 
 require 'ledenet_api'
 require 'bravtroller'

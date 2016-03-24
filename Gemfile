@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-json'
+gem 'sinatra-param'
 
 gem 'limitless-led'
 gem 'ledenet_api'
