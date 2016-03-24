@@ -1,5 +1,8 @@
 require_relative 'config_provider'
+
 require_relative '../drivers/composite_driver'
+require_relative '../drivers/noop_driver'
+require_relative '../drivers/demux_driver'
 
 module HaGateway
   module DriverLoader
@@ -19,14 +22,24 @@ module HaGateway
         raise RuntimeError, "The #{type} \"#{key}\" is not defined. Add it to the config."
       end
 
-      device = devices[key]
+      build_driver_from_defn(type, key, devices[key])
+    end
+
+    def build_driver_from_defn(type, key, device)
       driver = device['driver']
 
       driver_instance = if driver == 'composite'
         composite_devices = device['params']['components'].map { |c| build_driver(type, c) }
         CompositeDriver.new(type, device['params'], *composite_devices)
       elsif driver == 'demux'
-        demux_mapping = device['params']
+        demux_mapping = device['params']['delegates'].map { |action, defn|
+          [action, build_driver_from_defn(type, "__#{key}__#{action}", defn)]
+        }
+        demux_mapping = Hash[demux_mapping]
+
+        DemuxDriver.new(type, device['params'], demux_mapping)
+      elsif driver == 'noop'
+        NoOpDriver.new
       else
         begin
           require_relative "../drivers/#{type}/#{driver}"
