@@ -9,7 +9,7 @@ module HaGateway
       {status: driver.on?}.to_json
     end
 
-    post '/lights/:light_name' do
+    put '/lights/:light_name' do
       param :status, String, in: ['on', 'off'], transform: :downcase
       param :r,      Integer, range: (0..255)
       param :g,      Integer, range: (0..255)

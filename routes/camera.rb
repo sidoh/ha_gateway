@@ -58,7 +58,7 @@ module HaGateway
       end
     end
 
-    post '/camera/:camera_name' do
+    put '/camera/:camera_name' do
       param :recording,    Boolean
       param :preset,       String
       param :irMode,       String, in: ['0', '1']
