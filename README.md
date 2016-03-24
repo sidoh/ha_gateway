@@ -1,10 +1,11 @@
 # ha_gateway
-This is a tiny home automation REST gateway. It currently controls:
+This is a tiny home automation REST gateway. It supports the following types of devices:
 
-1. Lights using [ledenet_api](http://github.com/sidoh/ledenet_api) and [limitless-led](https://github.com/hired/limitless-led).
-2. TV using [bravtroller](http://github.com/sidoh/bravtroller).
-3. Kodi using UPnP.
-4. Foscam IP camera.
+1. RGB lights (off/on, level, r/g/b color)
+2. Switches (off/on)
+3. IP cameras
+
+There are several *drivers* for each type of device. For example, there's a driver for MiLight bulbs and foscam IP cameras.
 
 ## Configuration
 
@@ -20,7 +21,7 @@ lights:
       host: ledenet1
 ```
 
-This configures ha_gateway to respond to `POST /lights/leds`. Parameters are documented in a later section.
+This configures ha_gateway to respond to `PUT /lights/leds`. Parameters are documented in a later section.
 
 Please see [this blog post](http://blog.christophermullins.net/2015/10/17/cheap-alternative-to-phillips-hue-led-strip/) for more details on the overall setup.
 
@@ -55,30 +56,52 @@ The value of `X-Signature` is checked against the computed signature from the ot
 
 To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
 
+## Drivers
+
+Each device type has one ore more supported drivers. Every device of the same type supports the same interface, and the driver defines how that interface is implemented. You can find documentation either in the example configuration file or in the driver classes themselves.
+
+### Light
+
+1. LEDENET Magic UFO. Uses [ledenet_api](https://github.com/sidoh/ledenet_api).
+2. MiLight (Limitless LED) Bulbs. Uses [limitless-led](https://github.com/hired/limitless-led)
+
+### Switch
+
+1. Bravtroller. Control Sony Bravia TVs. Uses [bravtroller](https://github.com/sidoh/bravtroller).
+2. UPnP. Define custom UPnP actions for both `on` and `off` actions. There's an example that controls Kodi in the example config.
+
+### Meta-Drivers
+
+You can use these to chain together drivers in an interesting way:
+
+1. `noop`: do nothing.
+2. `composite`: control many devices from a single, aggregate device. You could use this, for example, if you wanted a master endpoint that controls all of your lights.
+3. `demux`: redirect each action to its own driver. Maybe you want `on` to do nothing and `off` to use UPnP to stop whatever Kodi is playing, for example.
+
 ## Endpoints
 
 By default, this server starts on port 8000 (configure in `config.ru`). Supported endpoints:
 
-1. `POST /lights/:light_name`
-2. `POST /switches/:switch_name`
-4. `POST /camera/:camera_name`
+1. `PUT /light/:light_name`
+2. `PUT /switch/:switch_name`
+4. `PUT /camera/:camera_name`
 5. `GET /camera/:camera_name/snapshot.jpg`
 5. `GET /camera/:camera_name/status.json`
 6. `GET /camera/:camera_name/stream.mjpeg`
 
 ## Supported parameters 
 
-### POST /lights/:light_name
+### PUT /light/:light_name
 
 1. `r`, `g`, `b` (all must be present to have an effect). Sets RGB value for LEDs. Range for each parameter should be [0,255].
 2. `status`. Sets on/off status. Supported values are "on" and "off".
 3. `level`. Sets the level/luminosity. Converts current color to HSL, adjusts level, and re-converts to RGB. Range should be [0,100].
 
-### POST /switch/:switch_name
+### PUT /switch/:switch_name
 
 1. `status`. Can be `on` or `off`.
 
-### POST /camera/:camera\_name
+### PUT /camera/:camera\_name
 
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
@@ -99,14 +122,14 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 The following example was executed with security features disabled (commented out):
 
 ```
-$ curl -X POST -d'status=on' -vvv http://localhost:8000/lights/leds
+$ curl -vvv -X PUT -d'status=on'  http://localhost:8000/lights/leds
 * Hostname was NOT found in DNS cache
 *   Trying ::1...
 * Connection failed
 * connect to ::1 port 8000 failed: Connection refused
 *   Trying 127.0.0.1...
 * Connected to localhost (127.0.0.1) port 8000 (#0)
-> POST /lights/leds HTTP/1.1
+> PUT /lights/leds HTTP/1.1
 > User-Agent: curl/7.35.0
 > Host: localhost:8000
 > Accept: */*
