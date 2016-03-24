@@ -11,11 +11,23 @@ lights:
   leds:
     driver: ledenet
     params:
+      # There are a couple of ways you can specify which device you'd like
+      # to control:
+      #   1. Specify no params. Control an arbitrary (maybe the only?) LEDENET
+      #      device on your network.
+      #   2. Specify a hardware address. ha_gateway will attempt to resolve
+      #      the host from the hw addr using a discovery protocol. This is
+      #      preferable if you don't have a hostname or static IP for the
+      #      LEDENET device.
+      #   3. Specify a host directly.
       hw_addr: 00:00:00:00:00:00
+      host: ledenet1
   living_room:
     driver: milight
     params:
       host: milight1
+
+      # This defines which "group" of lights are being controlled.
       group: 1
 
       # I had intermittent issues where some proper subset of the bulbs in a
@@ -27,18 +39,26 @@ lights:
   all_lights:
     driver: composite
     params:
+      # Use this many parallel workers to execute commands on components. For
+      # perfect parallelism, use a number of workers equal to the number of
+      # components. Defaults to 1, meaning commands are executed serially.
       parallelism: 2
+
+      # The list below are each references to other drivers already defined.
       components:
         - leds
         - living_room
 
 # Switches support on/off
 switches:
+  # Control a Bravia TV.
   downstairs_tv:
     driver: bravtroller_switch
     params:
       host: bravia1
 
+  # Define a custom driver that does nothing when switched on, but sends a
+  # UPnP "stop" command when turned off.
   upstairs_tv:
     driver: demux
     params:
