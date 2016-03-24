@@ -25,6 +25,8 @@ module HaGateway
       driver_instance = if driver == 'composite'
         composite_devices = device['params']['components'].map { |c| build_driver(type, c) }
         CompositeDriver.new(type, device['params'], *composite_devices)
+      elsif driver == 'demux'
+        demux_mapping = device['params']
       else
         begin
           require_relative "../drivers/#{type}/#{driver}"
