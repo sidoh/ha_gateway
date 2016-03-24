@@ -1,9 +1,9 @@
 module HaGateway
   class App < Sinatra::Application
-    put '/switches/:switch_name' do
+    put '/switch/:switch_name' do
       param :status, String, in: ['on', 'off'], transform: :downcase
 
-      driver = build_driver('switches', params['switch_name'])
+      driver = build_driver('switch', params['switch_name'])
 
       if params['status'] == 'on'
         driver.on

@@ -2,21 +2,21 @@ module HaGateway
   class App < Sinatra::Application
     RGB_PARAMS = ['r', 'g', 'b']
 
-    get '/lights/:light_name' do
-      driver = build_driver('lights', params['light_name'])
+    get '/light/:light_name' do
+      driver = build_driver('light', params['light_name'])
 
       content_type 'application/json'
       {status: driver.on?}.to_json
     end
 
-    put '/lights/:light_name' do
+    put '/light/:light_name' do
       param :status, String, in: ['on', 'off'], transform: :downcase
       param :r,      Integer, range: (0..255)
       param :g,      Integer, range: (0..255)
       param :b,      Integer, range: (0..255)
       param :level,  Integer, range: (0..100)
 
-      driver = build_driver('lights', params['light_name'])
+      driver = build_driver('light', params['light_name'])
 
       if params['status'] == 'on'
         driver.on

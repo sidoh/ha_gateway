@@ -1,3 +1,5 @@
+require 'active_support/inflector'
+
 require_relative 'config_provider'
 
 require_relative '../drivers/composite_driver'
@@ -16,7 +18,7 @@ module HaGateway
         return @@drivers[dk]
       end
 
-      devices = config_value(type)
+      devices = config_value(type.pluralize)
 
       if devices.nil? or devices[key].nil?
         raise RuntimeError, "The #{type} \"#{key}\" is not defined. Add it to the config."
