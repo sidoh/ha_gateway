@@ -16,3 +16,4 @@ gem 'thin'
 
 gem 'crack'
 gem 'thread'
+gem 'ruby-enum'

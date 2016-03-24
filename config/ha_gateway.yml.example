@@ -81,11 +81,15 @@ cameras:
   # This will, for example, make the snapshot URL for this camera
   # /camera/mycamera1/snapshot.jpg
   mycamera1:
-    host: camera1.mynetwork.net
-    username: myusername
-    password: mypassword
+    driver: foscam98
+    params:
+      host: camera1.mynetwork.net
+      username: myusername
+      password: mypassword
 
   mycamera2:
-    host: camera2.mynetwork.net
-    username: myusername
-    password: mypassword
+    driver: foscam98
+    params:
+      host: camera2.mynetwork.net
+      username: myusername
+      password: mypassword

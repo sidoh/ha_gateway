@@ -46,6 +46,8 @@ GEM
       rack
     rainbow (2.1.0)
     rake (11.1.1)
+    ruby-enum (0.5.0)
+      i18n
     safe_yaml (1.0.4)
     savon (2.11.1)
       akami (~> 1.2)
@@ -89,6 +91,7 @@ DEPENDENCIES
   ledenet_api
   limitless-led
   net-ping
+  ruby-enum
   sinatra
   sinatra-json
   sinatra-param
