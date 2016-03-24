@@ -1,7 +1,4 @@
-require 'uri'
-require 'net/http'
 require 'open3'
-require 'crack'
 
 module HaGateway
   class App < Sinatra::Application
