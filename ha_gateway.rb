@@ -1,4 +1,4 @@
-rte easequire 'sinatra'
+require 'sinatra'
 require 'sinatra/json'
 require 'sinatra/param'
 
