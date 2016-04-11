@@ -1,9 +1,10 @@
-require 'sinatra'
+rte easequire 'sinatra'
 require 'sinatra/json'
 require 'sinatra/param'
 
 require 'ledenet_api'
 require 'bravtroller'
+require 'easy_upnp/ssdp_searcher'
 require 'color'
 require 'openssl'
 require 'net/ping'
@@ -11,6 +12,9 @@ require 'net/ping'
 require 'open-uri'
 
 require_relative 'helpers/config_provider'
+
+EasyUpnp::Log.enabled = true
+EasyUpnp::Log.level = :debug
 
 module HaGateway
   class App < Sinatra::Application
