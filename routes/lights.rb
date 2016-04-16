@@ -14,7 +14,7 @@ module HaGateway
       param :r,      Integer, range: (0..255)
       param :g,      Integer, range: (0..255)
       param :b,      Integer, range: (0..255)
-      param :level,  Integer, range: (0..100)
+      param :level,  Float, range: (0..100)
 
       driver = build_driver('light', params['light_name'])
 

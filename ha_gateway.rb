@@ -19,6 +19,10 @@ EasyUpnp::Log.level = :debug
 module HaGateway
   class App < Sinatra::Application
     before do
+      logger.info "Params: #{params.inspect}"
+    end
+    
+    before do
       if security_enabled?
         timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
         payload   = request.env['HTTP_X_SIGNATURE_PAYLOAD']
