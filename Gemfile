@@ -12,7 +12,7 @@ gem 'easy_upnp'
 
 gem 'bravtroller'
 gem 'net-ping'
-gem 'thin'
+gem 'puma'
 
 gem 'crack'
 gem 'thread'
