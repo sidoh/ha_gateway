@@ -6,7 +6,7 @@ gem 'sinatra-param'
 gem 'activesupport'
 
 gem 'limitless-led'
-gem 'ledenet_api'
+gem 'ledenet_api', '>= 1.0.0'
 gem 'color'
 gem 'easy_upnp'
 

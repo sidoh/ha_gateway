@@ -24,16 +24,17 @@ module HaGateway
     end
 
     def color(r, g, b)
-      api.update_color(r, g, b)
+      api.update_rgb(r, g, b)
     end
 
     def level(l)
-      hsl_color = Color::RGB.new(*api.current_color).to_hsl
+      hsl_color = Color::RGB.new(*api.current_rgb).to_hsl
       hsl_color.luminosity = l.to_i
 
       adjusted_rgb = hsl_color.to_rgb.to_a.map { |x| (x * 255).to_i }
 
-      api.update_color(*adjusted_rgb)
+      api.update_rgb(*adjusted_rgb)
+      api.update_warm_white((l * (255/100)).to_i)
     end
 
     private
