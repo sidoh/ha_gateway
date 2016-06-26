@@ -3,5 +3,4 @@
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-bin/stop 
-bin/start
+bin/stop && bin/start
