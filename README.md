@@ -70,6 +70,11 @@ Each device type has one ore more supported drivers. Every device of the same ty
 1. Bravtroller. Control Sony Bravia TVs. Uses [bravtroller](https://github.com/sidoh/bravtroller).
 2. UPnP. Define custom UPnP actions for both `on` and `off` actions. There's an example that controls Kodi in the example config.
 
+### Camera
+
+1. Foscam 98 series.
+2. Amcrest 721 series.
+
 ### Meta-Drivers
 
 You can use these to chain together drivers in an interesting way:
