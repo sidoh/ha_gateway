@@ -49,7 +49,10 @@ module HaGateway
           raise RuntimeError, "Unable to find UPnP device with UUID: #{params['uuid']}"
         end
 
-        service = device.service(params['service'])
+        service = device.service(params['service']) do |c|
+          c.log_enabled = true
+          c.log_level = :debug
+        end
 
         if service.nil?
           raise RuntimeError, "Service \"#{params['service']}\" undefined for device with UUID: #{params['uuid']}"

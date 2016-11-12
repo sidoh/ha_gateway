@@ -13,9 +13,6 @@ require 'open-uri'
 
 require_relative 'helpers/config_provider'
 
-EasyUpnp::Log.enabled = true
-EasyUpnp::Log.level = :debug
-
 module HaGateway
   class App < Sinatra::Application
     before do
