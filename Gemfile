@@ -10,7 +10,7 @@ gem 'ledenet_api', '>= 1.0.0'
 gem 'color'
 gem 'easy_upnp'
 
-gem 'bravtroller'
+gem 'bravtroller', '~> 1.0'
 gem 'net-ping'
 gem 'puma'
 
