@@ -4,7 +4,7 @@ require 'sinatra/param'
 
 require 'ledenet_api'
 require 'bravtroller'
-require 'easy_upnp/ssdp_searcher'
+require 'easy_upnp'
 require 'color'
 require 'openssl'
 require 'net/ping'
