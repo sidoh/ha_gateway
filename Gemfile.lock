@@ -51,6 +51,7 @@ GEM
     rake (11.3.0)
     ruby-enum (0.5.0)
       i18n
+    ruby-pcap (0.7.9)
     rubyntlm (0.6.1)
     safe_yaml (1.0.4)
     savon (2.11.1)
@@ -94,6 +95,7 @@ DEPENDENCIES
   net-ping
   puma
   ruby-enum
+  ruby-pcap
   sinatra
   sinatra-json
   sinatra-param

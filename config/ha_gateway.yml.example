@@ -93,3 +93,15 @@ cameras:
       host: camera2.mynetwork.net
       username: myusername
       password: mypassword
+      
+listeners:
+  dash1:
+    driver: dash_button
+    hw_addr: aa:bb:cc:dd:ee:ff
+    events:
+      pressed:
+        http:
+          method: PUT
+          url: http://localhost:3000/lights/all_lights
+          params:
+            status: off

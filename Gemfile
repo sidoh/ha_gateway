@@ -15,5 +15,6 @@ gem 'net-ping'
 gem 'puma'
 
 gem 'crack'
-gem 'thread'
 gem 'ruby-enum'
+gem 'ruby-pcap'
+gem 'thread'

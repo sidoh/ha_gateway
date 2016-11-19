@@ -1,3 +1,4 @@
+require 'yaml'
 require 'ledenet_api'
 
 module HaGateway
