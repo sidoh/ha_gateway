@@ -4,6 +4,18 @@ require 'ledenet_api'
 module HaGateway
   module ConfigProvider
     @@config = nil
+    
+    def smartthings_oauth_client
+      settings = config_value('smartthings')
+      
+      @@smartthings_oauth_client ||= OAuth2::Client.new(
+        settings['client_id'],
+        settings['client_secret'],
+        site: 'https://graph.api.smartthings.com',
+        authorize_url: '/oauth/authorize',
+        token_url: '/oauth/token'
+      )
+    end
 
     def ledenet_host
       model = 'HF-LPB100-ZJ200'
