@@ -30,7 +30,9 @@ module HaGateway
         http.use_ssl = true
         response = http.request(request)
         
-        JSON.parse(response.body)
+        if body = response.body
+          JSON.parse(body)
+        end
       end
       
       def smartthings_build_request(uri, verb, params)
@@ -79,7 +81,8 @@ module HaGateway
     end
     
     put '/smartthings/device/:device_id' do
-      smartthings_request(:put, "/switches/#{params['device_id']}", command: params['command']).to_json
+      path = "/switches/#{params['device_id']}?command=#{params['command']}"
+      smartthings_request(:put, path).to_json
     end
   end
 end
