@@ -2,9 +2,13 @@ require 'net/http'
 require 'active_support/inflector'
 require 'logger'
 
+require_relative '../../helpers/config_provider'
+
 module HaGateway
   class Listener
     attr_reader :params
+    
+    include ConfigProvider
     
     def initialize(params = {})
       @params = params
@@ -28,7 +32,13 @@ module HaGateway
     
     def http_event(http_config, *args)
       begin
-        uri = URI(http_config['url'])
+        url = http_config['url']
+        
+        if !url.start_with?('http')
+          url = "#{config_value('site_location')}#{url}"
+        end
+        
+        uri = URI(url)
         
         Net::HTTP.start(uri.host, uri.port) do |http|
           method = http_config['method'].titleize
