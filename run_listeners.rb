@@ -13,11 +13,11 @@ OptionParser.new do |opts|
     options[:check_sudo] = true
   end
 end.parse!
+  
+listeners = config_value('listeners') || []
 
 if options[:check_sudo]
-  listeners = config_value('listeners')
-  
-  has_arp_probe = listeners && listeners.any? do |_, config|
+  has_arp_probe = listeners.any? do |_, config|
     config['driver'] == 'arp_probe'
   end
   
