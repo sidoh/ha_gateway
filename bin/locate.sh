@@ -11,11 +11,13 @@ ha_gateway_tmpdir() {
 }
 
 ha_gateway_pidfile() {
-  echo "$(ha_gateway_tmpdir)/ha_gateway.pid"
+  process=$1
+  echo "$(ha_gateway_tmpdir)/${process}.pid"
 }
 
 ha_gateway_locate() {
-  pidfile=$(ha_gateway_pidfile)
+  process=$1
+  pidfile=$(ha_gateway_pidfile "$process")
   if [[ -e "$pidfile" ]] && [[ $(ps -p $(cat "$pidfile") -o 'pid=' | wc -l) -gt 0 ]]; then
     cat "$pidfile"
   fi

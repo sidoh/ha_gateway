@@ -8,10 +8,26 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source $DIR/locate.sh
 
-if [ ! -z "$(ha_gateway_locate)" ]; then
-  echo "process already running. run stop to kill it."
-  exit 1
-fi
+start_process() {
+  process=$1
+  script=$2
+  
+  if [ ! -z "$(ha_gateway_locate "$process")" ]; then
+    echo "$process already running. run stop to kill it."
+  else
+    nohup bash -c "$script" 2>&1 >> $(ha_gateway_logdir)/$process.log &
+    echo -ne "$!" > "$(ha_gateway_pidfile "$process")"
+  fi
+}
 
-nohup bash -c "$DIR/run.sh" 2>&1 >> $(ha_gateway_logdir)/ha_gateway.log &
-echo -ne "$!" > "$(ha_gateway_pidfile)"
+start_process 'ha_gateway' "$DIR/run.sh"
+
+if [[ $(bundle exec ruby run_listeners.rb --requires-sudo) == "true" ]]; then
+  echo "Listeners process requires sudo access. Check log to make sure it "
+  echo "succeeded: "
+  echo "$(ha_gateway_logdir)/listeners.log"
+  
+  start_process 'listeners' "sudo $DIR/run_listeners.sh"
+else
+  start_process 'listeners' "$DIR/run_listeners.sh"
+fi  
