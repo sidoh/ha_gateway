@@ -46,11 +46,16 @@ module HaGateway
         
         request
       end
+      
+      def smartthings_redirect_url(request)
+        base = config_value('site_location') || request.base_url
+        "#{base}/smartthings/callback"
+      end
     end
     
     get '/smartthings/authorize' do
       url = smartthings_oauth_client.auth_code.authorize_url(
-        redirect_uri: "#{request.base_url}/smartthings/callback",
+        redirect_uri: smartthings_redirect_url(request),
         scope: 'app'
       )
       
