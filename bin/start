@@ -15,7 +15,7 @@ start_process() {
   if [ ! -z "$(ha_gateway_locate "$process")" ]; then
     echo "$process already running. run stop to kill it."
   else
-    nohup bash -c "$script" 2>&1 >> $(ha_gateway_logdir)/$process.log &
+    nohup bash -cl "$script" 2>&1 >> $(ha_gateway_logdir)/$process.log &
     echo -ne "$!" > "$(ha_gateway_pidfile "$process")"
   fi
 }
