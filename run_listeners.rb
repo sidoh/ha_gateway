@@ -27,7 +27,7 @@ end
 
 threads = []
 
-config_value('listeners').each do |key, config|
+listeners.each do |key, config|
   driver = build_driver_from_defn('listener', key, config)
   
   threads << Thread.new do
