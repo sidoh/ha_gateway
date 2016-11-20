@@ -1,5 +1,6 @@
 require 'net/http'
 require 'active_support/inflector'
+require 'logger'
 
 module HaGateway
   class Listener
@@ -17,6 +18,10 @@ module HaGateway
           http_event(http_config, *args)
         end
       end
+    end
+    
+    def logger
+      @logger ||= Logger.new(STDOUT)
     end
     
     private
