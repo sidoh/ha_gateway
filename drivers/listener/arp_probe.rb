@@ -12,7 +12,13 @@ module HaGateway
     
     def listen
       begin
-        caplet = Pcap::Pcaplet.new
+        caplet_params = []
+        
+        if iface = params['interface']
+          caplet_params << "-i #{iface}"
+        end
+        
+        caplet = Pcap::Pcaplet.new(*caplet_params)
         caplet.add_filter(Pcap::Filter.new('arp'))
         
         dedup_threshold = params['dedup_threshold'] || 0
@@ -37,7 +43,7 @@ module HaGateway
           logger.info "Last event: #{last_event}"
         end
       rescue Pcap::PcapError => e
-        logger.error "Error setting up Pcap listener. This probably means you didn't start the process as root."
+        logger.error "Error setting up Pcap listener: #{e}\n#{e.backtrace.join("\n")}"
       end
     end
     
