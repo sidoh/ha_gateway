@@ -12,22 +12,15 @@ module HaGateway
     
     def listen
       begin
-        caplet_params = []
-        
-        if iface = params['interface']
-          caplet_params << "-i #{iface}"
-        end
-        
-        caplet = Pcap::Pcaplet.new(*caplet_params)
-        caplet.add_filter(Pcap::Filter.new('arp'))
+        caplet = build_pcap_listener(params['interface'])
+        caplet.add_filter('arp')
         
         dedup_threshold = params['dedup_threshold'] || 0
         last_event = 0
         
         caplet.each_packet do |packet|
-          hw_addr = packet.raw_data[6,6].bytes.map { |x| sprintf('%02x', x) }.join
+          hw_addr = arp_src_addr(packet)
           selected_hw_addr = params['hw_addr'].downcase.gsub(':', '')
-          
           
           if hw_addr == selected_hw_addr && current_timestamp > (last_event + dedup_threshold)
             logger.debug "Got ARP query from: #{hw_addr}"

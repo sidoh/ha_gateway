@@ -2,6 +2,7 @@ require 'optparse'
 
 require_relative 'helpers/config_provider'
 require_relative 'helpers/driver_loader'
+require_relative 'helpers/pcap'
 
 include HaGateway::ConfigProvider
 include HaGateway::DriverLoader
@@ -14,7 +15,27 @@ OptionParser.new do |opts|
   opts.on('--requires-sudo', 'Check if script requires sudo') do
     options[:check_sudo] = true
   end
+  
+  opts.on('--arp-sniff', "Don't run listeners; listen for ARP packets") do
+    options[:arp_sniff] = true
+  end
+  
+  opts.on('--interface [iface]', String, 'Interface to listen on') do |v|
+    options[:interface] = v
+  end
 end.parse!
+
+if options[:arp_sniff]
+  include HaGateway::Pcap
+  pcap = build_pcap_listener(options[:interface])
+  pcap.add_filter('arp')
+  
+  pcap.each_packet do |packet|
+    puts "Got ARP packet from: #{arp_src_addr(packet)}"
+  end
+  
+  exit
+end
   
 listeners = config_value('listeners') || []
 
