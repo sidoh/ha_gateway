@@ -34,8 +34,6 @@ module HaGateway
             fire_event :probe_received
             last_event = current_timestamp
           end
-            
-          logger.info "Last event: #{last_event}"
         end
       rescue Pcap::PcapError => e
         logger.error "Error setting up Pcap listener: #{e}\n#{e.backtrace.join("\n")}"
