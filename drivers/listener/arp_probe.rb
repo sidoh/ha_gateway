@@ -28,12 +28,11 @@ module HaGateway
           hw_addr = packet.raw_data[6,6].bytes.map { |x| sprintf('%02x', x) }.join
           selected_hw_addr = params['hw_addr'].downcase.gsub(':', '')
           
-          logger.debug "Got ARP query from: #{hw_addr}"
           
           if hw_addr == selected_hw_addr && current_timestamp > (last_event + dedup_threshold)
-            last_event = current_timestamp
-            
+            logger.debug "Got ARP query from: #{hw_addr}"
             fire_event :probe_received
+            last_event = current_timestamp
           end
             
           logger.info "Last event: #{last_event}"
