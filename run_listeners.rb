@@ -8,6 +8,8 @@ include HaGateway::DriverLoader
 
 options = {}
 
+$stdout.sync = true
+
 OptionParser.new do |opts|
   opts.on('--requires-sudo', 'Check if script requires sudo') do
     options[:check_sudo] = true

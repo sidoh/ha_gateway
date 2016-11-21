@@ -33,11 +33,7 @@ module HaGateway
           if hw_addr == selected_hw_addr && current_timestamp > (last_event + dedup_threshold)
             last_event = current_timestamp
             
-            begin 
-              fire_event :probe_received
-            rescue Exception => e
-              logger.error "Caught exception when firing event: #{e}"
-            end
+            fire_event :probe_received
           end
             
           logger.info "Last event: #{last_event}"

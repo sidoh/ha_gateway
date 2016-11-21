@@ -3,12 +3,14 @@ require 'active_support/inflector'
 require 'logger'
 
 require_relative '../../helpers/config_provider'
+require_relative '../../helpers/security'
 
 module HaGateway
   class Listener
     attr_reader :params
     
     include ConfigProvider
+    include Security
     
     def initialize(params = {})
       @params = params
@@ -17,10 +19,14 @@ module HaGateway
     def fire_event(event, *args)
       event = event.to_s
       
-      if event_config = params['events'][event]
-        if http_config = event_config['http']
-          http_event(http_config, *args)
+      begin      
+        if event_config = params['events'][event]
+          if http_config = event_config['http']
+            http_event(http_config, *args)
+          end
         end
+      rescue Exception => e
+        logger.error "Caught exception when firing event: #{e}\n#{e.backtrace.join("\n")}"
       end
     end
     
@@ -48,6 +54,8 @@ module HaGateway
             request.body = URI.encode_www_form(http_config['params'])
             request.content_type = 'multipart/form-data'
           end
+          
+          sign_request(request)
           
           http.request(request)
         end
