@@ -73,10 +73,10 @@ module HaGateway
       
       save_state(OAUTH_TOKEN_KEY, response.token)
       
-      redirect '/smartthings/list_devices'
+      redirect '/smartthings/devices'
     end
     
-    get '/smartthings/list_devices' do
+    get '/smartthings/devices' do
       if !smartthings_oauth_token
         redirect '/smartthings/authorize'
       else
@@ -85,9 +85,18 @@ module HaGateway
       end
     end
     
-    put '/smartthings/device/:device_id' do
+    put '/smartthings/devices/:device_id' do
       path = "/switches/#{params['device_id']}?command=#{params['command']}"
       smartthings_request(:put, path).to_json
+    end
+    
+    get '/smartthings/routines' do
+      smartthings_request(:get, '/routines').to_json
+    end
+    
+    get '/smartthings/routines/:routine' do
+      path = "/routines/#{params['routine']}"
+      smartthings_request(:get, path).to_json
     end
   end
 end
