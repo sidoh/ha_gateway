@@ -2,7 +2,7 @@ require 'optparse'
 
 require_relative 'helpers/config_provider'
 require_relative 'helpers/driver_loader'
-require_relative 'helpers/pcap'
+require_relative 'helpers/pcap_helpers'
 
 include HaGateway::ConfigProvider
 include HaGateway::DriverLoader
@@ -26,7 +26,7 @@ OptionParser.new do |opts|
 end.parse!
 
 if options[:arp_sniff]
-  include HaGateway::Pcap
+  include HaGateway::PcapHelpers
   pcap = build_pcap_listener(options[:interface])
   pcap.add_filter('arp')
   

@@ -1,7 +1,7 @@
 require 'pcap/pcaplet'
 
 module HaGateway
-  module Pcap
+  module PcapHelpers
     def build_pcap_listener(iface = nil)
       caplet_params = []
       
@@ -9,7 +9,7 @@ module HaGateway
         caplet_params << "-i #{iface}"
       end
       
-      ::Pcap::Pcaplet.new(*caplet_params)
+      Pcap::Pcaplet.new(*caplet_params)
     end
     
     def arp_src_addr(packet)

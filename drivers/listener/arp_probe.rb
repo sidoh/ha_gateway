@@ -1,9 +1,12 @@
 require 'pcap/pcaplet'
 
 require_relative 'listener'
+require_relative '../../helpers/pcap_helpers'
 
 module HaGateway
   class ArpProbeDriver < HaGateway::Listener
+    include PcapHelpers
+    
     attr_reader :params
     
     def initialize(params = {})

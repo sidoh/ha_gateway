@@ -7,5 +7,5 @@ HaGateway::App.helpers HaGateway::DriverLoader
 require_relative 'persistence'
 HaGateway::App.helpers HaGateway::Persistence
 
-require_relative 'pcap'
-HaGateway::App.helpers HaGateway::Pcap
+require_relative 'pcap_helpers'
+HaGateway::App.helpers HaGateway::PcapHelpers
