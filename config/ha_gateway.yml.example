@@ -113,15 +113,42 @@ cameras:
 # Useful for Amazon Dash buttons.
 listeners:
   amazon_dash_button1:
+    # The arp_probe driver listens for ARP queries. Devices will send out ARP 
+    # queries when they join a network. This is the typical hack used to 
+    # re-purpose Amazon Dash buttons. You could also use it to detect, 
+    # for example, when your smartphone connects to your network.
     driver: arp_probe
+    
     params:
+      # Hardware address of the device to listen for.
       hw_addr: aa:bb:cc:dd:ee:ff
+      
+      # Optional: Which interface to listen on. Defaults to whatever pcap 
+      # decides.
+      # interface: eth0
+      
+      # Optional: milliseconds that ARP queries from the same device are 
+      # considered duplicates. Defaults to 0
+      # dedup_threshold: 5000
+      
       events:
-        pressed:
+        probe_received:
+          # Fires an HTTP request when the event is received.
           http:
             method: PUT
+            
             # URL called will be filled in with site_location. Requests will be
             # signed with security credentials.
             url: /lights/all_lights
+            
             params:
               status: off
+              
+  amazon_dash_button2:
+    driver: arp_probe
+    params:
+      hw_addr: bb:cc:dd:ee:ff:aa
+      events:
+        http:
+          method: GET
+          url: /smartthings/routines/good_night
