@@ -154,3 +154,48 @@ $ curl -vvv -X PUT -d'status=on'  http://localhost:8000/lights/leds
 * Connection #0 to host localhost left intact
 {"success": true}%
 ```
+
+## SmartThings
+
+HaGateway allows you to control devices and execute routines within SmartThings. This allows you to integrate custom event controllers (like Amazon Dash buttons) with SmartThings.
+
+To use this integration, you'll need to do a few things:
+
+1. Set up a [SmartApp](http://docs.smartthings.com/en/latest/smartapp-developers-guide/). I'd recommend [this one](https://gist.github.com/sidoh/da36d2c1099910ef38a6021dc39a61a4).
+2. Enable OAuth on that app, and fill the Client ID and Client Secret in HaGateway's config.
+3. Run through OAuth by navigating to http://<hagatewayurl>/smartthings/authorize. You might be prompted to select which devices you'd like to enable control of.
+
+You can then make use of the following endpoints:
+
+### GET /smartthings/devices
+
+Returns a JSON object of devices. Structure is: `key -> data`, where key is a UUID used to address the device, and data includes the name and current status of the device.
+
+### PUT /smartthings/devices/:device_id
+
+Changes the status of the specified device. Only supported parameter is `command`, which must be passed as the query string in the URL due to a bug in SmartThings. Supported values are `on`, `off`, and `toggle`.
+
+### GET /smartthings/routines
+
+Gets a list of routines.
+
+### GET /smartthings/routines/:routine
+
+Executes the specified routine. Normalize by:
+
+* Removing non-alphanumeric characters
+* Replacing spaces with underscores
+* Downcasing
+
+So "Good Night!" becomes "good_night".
+
+## Listeners
+
+HaGateway runs a separate process that listens for events, and allows configurable actions to be executed when events arrive. You could use this, for example, to run some SmartThings routine when an Amazon Dash button is pressed. 
+
+Listens run in a separate process for a few reasons:
+
+* They're not really a part of the REST server, so it made sense to isolate them.
+* The Amazon Dash hack typically requires packet sniffing, which usually means the process needs to run as root. Wanted to reduce the amount of code running in a privileged environment.
+
+For examples and documentation, see the example configuration file.
