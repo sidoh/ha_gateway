@@ -19,7 +19,7 @@ module HaGateway
     private
       def bravtroller
         if !@bravtroller
-          @bravtroller = Bravtroller::Remote.new(Bravtroller::Client.new(params['host']))
+          @bravtroller = Bravtroller::Remote.new(params['host'])
         end
         @bravtroller
       end
