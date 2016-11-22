@@ -6,6 +6,19 @@ require_hmac_signatures: false
 # The secret to use when generating/validating HMAC signatures.
 hmac_secret: cakeisdelicious
 
+# You'll have to fill this out to use SmartThings integration features. 
+smartthings:
+  # OAuth credentials. To get these, you'll have to create a SmartApp.
+  client_id: deadbeef
+  clienet_secret: hunter2
+  
+# Used to construct URLs of the site served by HaGateway. E.g. for OAuth 
+# callbacks
+site_location: http://localhost:8000
+
+# Path for file used to store persistent data.
+persistence_path: config/persistence.yml
+
 # Lights are assumed to be RGB and support on/off, level, and RGB color.
 lights:
   leds:
@@ -94,14 +107,21 @@ cameras:
       username: myusername
       password: mypassword
       
+# Listeners are generally things that listen for events and allow you to run
+# actions when they're picked up. For example, the arp_probe driver allows you
+# to detect when a device with a certain hardware address joins the network.
+# Useful for Amazon Dash buttons.
 listeners:
-  dash1:
-    driver: dash_button
-    hw_addr: aa:bb:cc:dd:ee:ff
-    events:
-      pressed:
-        http:
-          method: PUT
-          url: http://localhost:3000/lights/all_lights
-          params:
-            status: off
+  amazon_dash_button1:
+    driver: arp_probe
+    params:
+      hw_addr: aa:bb:cc:dd:ee:ff
+      events:
+        pressed:
+          http:
+            method: PUT
+            # URL called will be filled in with site_location. Requests will be
+            # signed with security credentials.
+            url: /lights/all_lights
+            params:
+              status: off
