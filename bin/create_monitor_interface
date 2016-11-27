@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+print_usage() {
+  echo "Usage is: $(basename $0) Interface MonitorDeviceName"
+  echo "Example:  $(basename $0) eth0 DashMonitor"
+}
+
+verify_installed() {
+  if ! hash "$1" 2>/dev/null; then
+    echo "Couldn't find required binary: $1. Make sure it's on your path."
+    exit 1
+  fi
+}
+
+exit_with_error() {
+  echo $1
+  exit 1
+}
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+  print_usage
+  exit 1
+fi
+
+verify_installed "iw"
+
+interface=$1
+monitor_name=$2
+
+if ! ifconfig "$interface" >/dev/null 2>/dev/null; then
+  echo "Couldn't find interface: $interface"
+  exit 1
+fi
+
+phy_index=$(iw dev "$interface" info | grep 'wiphy' | awk '{print $2}' ) || exit_with_error "Couldn't find physical device for $interface"
+phy_interface="phy${phy_index}"
+
+iw dev "$monitor_name" del 2>/dev/null || true
+iw phy "$phy_interface" interface add "$monitor_name" type monitor || exit_with_error "Failed to create monitor device. Make sure physical interface $phy_interface exists."
+
+ifconfig "$monitor_name" up
+
+echo "Monitor interface $monitor_name successfully created!"

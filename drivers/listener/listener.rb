@@ -7,17 +7,29 @@ require_relative '../../helpers/security'
 
 module HaGateway
   class Listener
-    attr_reader :params
+    attr_reader :params, :last_event_times
     
     include ConfigProvider
     include Security
     
     def initialize(params = {})
       @params = params
+      @last_event_times = {}
     end
     
     def fire_event(event, *args)
       event = event.to_s
+      
+      if dedup_threshold = params['dedup_threshold']
+        now = current_timestamp
+        
+        if (last_time = last_event_times[event]) && (now <= (last_time + dedup_threshold))
+          logger.debug "Skipping event #{event} in #{self.class} because last instance of event was too recently."
+          return
+        end
+        
+        last_event_times[event] = now
+      end
       
       begin      
         if event_config = params['events'][event]
@@ -35,6 +47,18 @@ module HaGateway
     end
     
     private
+    
+    def current_timestamp
+      (Time.now.to_f*1000).to_i
+    end
+    
+    def require_params(*p)
+      p.each do |param|
+        if ! params.include?(param.to_s)
+          raise "Missing required parameter `param` for #{self.class}"
+        end
+      end
+    end
     
     def http_event(http_config, *args)
       begin
