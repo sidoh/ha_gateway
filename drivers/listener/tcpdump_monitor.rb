@@ -30,7 +30,7 @@ module HaGateway
       args += %w(-q -p -c 1)
       
       while true 
-        Open3.popen2(*args) do |_, stdout, _|
+        Open3.popen3(*args) do |_, stdout, _, _|
           line = stdout.gets
           logger.debug "Read line from tcpdump: #{line}"
           
