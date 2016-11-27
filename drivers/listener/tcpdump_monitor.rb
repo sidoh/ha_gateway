@@ -27,7 +27,7 @@ module HaGateway
         args << "ether host #{hw_addr}"
       end
       
-      args += %w(-q -p)
+      args += %w(-q -p -c 1)
       
       while true 
         Open3.popen2(*args) do |_, stdout, _|
