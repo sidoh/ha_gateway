@@ -87,37 +87,37 @@ You can use these to chain together drivers in an interesting way:
 
 By default, this server starts on port 8000 (configure in `config.ru`). Supported endpoints:
 
-1. `PUT /light/:light_name`
-2. `PUT /switch/:switch_name`
-4. `PUT /camera/:camera_name`
-5. `GET /camera/:camera_name/snapshot.jpg`
-5. `GET /camera/:camera_name/status.json`
-6. `GET /camera/:camera_name/stream.mjpeg`
+1. `PUT /lights/:light_name`
+2. `PUT /switches/:switch_name`
+4. `PUT /cameras/:camera_name`
+5. `GET /cameras/:camera_name/snapshot.jpg`
+5. `GET /cameras/:camera_name/status.json`
+6. `GET /cameras/:camera_name/stream.mjpeg`
 
 ## Supported parameters 
 
-### PUT /light/:light_name
+### PUT /lights/:light_name
 
 1. `r`, `g`, `b` (all must be present to have an effect). Sets RGB value for LEDs. Range for each parameter should be [0,255].
 2. `status`. Sets on/off status. Supported values are "on" and "off".
 3. `level`. Sets the level/luminosity. Converts current color to HSL, adjusts level, and re-converts to RGB. Range should be [0,100].
 
-### PUT /switch/:switch_name
+### PUT /switches/:switch_name
 
 1. `status`. Can be `on` or `off`.
 
-### PUT /camera/:camera\_name
+### PUT /cameras/:camera\_name
 
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
 3. `irMode`. Sets infrared LED mode. Can be `auto`, `on`, or `off`.
 5. `remoteAccess`. Enables or disables the P2P feature required to access the camera remotely (though the foscam app).
 
-### GET /camera/:camera\_name/snapshot.jpg
+### GET /cameras/:camera\_name/snapshot.jpg
 
 1. `rotate`. Rotates the image by the provided number of degrees. Requires imagemagick's `convert` to be accessible via commandline.
 
-### GET /camera/:camera\_name/stream.mjpeg
+### GET /cameras/:camera\_name/stream.mjpeg
 
 1. `length`. Limits the length of the stream to the provided value (in seconds).
 

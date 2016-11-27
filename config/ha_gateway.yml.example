@@ -187,6 +187,6 @@ listeners:
         probe_received:
           http:
             method: PUT
-            url: /switch/upstairs_tv
+            url: /switches/upstairs_tv
             params:
               status: 'off'

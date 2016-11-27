@@ -4,14 +4,14 @@ module HaGateway
   class App < Sinatra::Application
     STREAM_BOUNDARY = "__BOUNDARY__"
 
-    get '/camera/:camera_name/status.json' do
+    get '/cameras/:camera_name/status.json' do
       driver = build_driver('camera', params['camera_name'])
 
       content_type 'application/json'
       driver.status.to_json
     end
 
-    get '/camera/:camera_name/snapshot.jpg' do
+    get '/cameras/:camera_name/snapshot.jpg' do
       param :rotate, Integer, range: (0..360)
 
       driver = build_driver('camera', params['camera_name'])
@@ -30,7 +30,7 @@ module HaGateway
       r
     end
 
-    get '/camera/:camera_name/stream.mjpeg' do
+    get '/cameras/:camera_name/stream.mjpeg' do
       param :length, Integer, min: 1
 
       driver = build_driver('camera', params['camera_name'])
@@ -53,7 +53,7 @@ module HaGateway
       end
     end
 
-    put '/camera/:camera_name' do
+    put '/cameras/:camera_name' do
       param :recording,    String, in: ['true', 'false']
       param :preset,       String
       param :irMode,       String, in: ['on', 'off', 'auto']
