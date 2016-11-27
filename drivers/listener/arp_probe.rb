@@ -18,17 +18,13 @@ module HaGateway
         caplet = build_pcap_listener(params['interface'])
         caplet.add_filter('arp')
         
-        dedup_threshold = params['dedup_threshold'] || 0
-        last_event = 0
-        
         caplet.each_packet do |packet|
           hw_addr = arp_src_addr(packet)
           selected_hw_addr = params['hw_addr'].downcase.gsub(':', '')
           
-          if hw_addr == selected_hw_addr && current_timestamp > (last_event + dedup_threshold)
+          if hw_addr == selected_hw_addr 
             logger.debug "Got ARP query from: #{hw_addr}"
             fire_event :probe_received
-            last_event = current_timestamp
           end
         end
       rescue Pcap::PcapError => e
@@ -37,9 +33,5 @@ module HaGateway
     end
     
     private
-    
-    def current_timestamp
-      (Time.now.to_f*1000).to_i
-    end
   end
 end
