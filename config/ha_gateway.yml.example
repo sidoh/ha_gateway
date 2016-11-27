@@ -154,16 +154,39 @@ listeners:
             method: GET
             url: /smartthings/routines/good_night
           
+  # This driver relies on having a dedicated wireless device that supports 
+  # monitor mode. It's adapted from this example:
+  #
+  #   https://github.com/ridiculousfish/one-second-dash
+  #
+  # In order for it to function, you first need to create a virtual monitor
+  # device. Use ./bin/create_monitor_interface for that.
+  #
+  # The extra setup buys you a few things:
+  #   1. Can kill the network used to set the dash buttons up. They will then
+  #      fail to connect, and won't try to order anything.
+  #
+  #   2. Latency is a lot more favorable. Approximately ~1s compared to ~5s with
+  #      arp_probe.
   amazon_dash_button3:
     driver: tcpdump_monitor
     params:
+      # Hardware address of the dash button.
       hw_addr: cc:dd:ee:ff:aa:bb
+      
+      # Name of the virtual monitor interface. If you used 
+      # ./bin/create_monitor_interface, this will be the second argument you
+      # passed that script.
       interface: DashMonitor
+      
+      # There will always be 5-10 packets each time you press the button. You'll
+      # probably need to have this set to something reasonable.
       dedup_threshold: 5000
+      
       events:
         probe_received:
           http:
             method: PUT
-            url: /switch/downstairs_tv
+            url: /switch/upstairs_tv
             params:
               status: 'off'
