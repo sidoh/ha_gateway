@@ -23,8 +23,8 @@ module HaGateway
       if dedup_threshold = params['dedup_threshold']
         now = current_timestamp
         
-        if !(last_time = last_event_times[event]) || now <= (last_time + dedup_threshold)
-          log.debug "Skipping event #{event} in #{self.class} because last instance of event was too recently."
+        if (last_time = last_event_times[event]) && (now <= (last_time + dedup_threshold))
+          logger.debug "Skipping event #{event} in #{self.class} because last instance of event was too recently."
           return
         end
         

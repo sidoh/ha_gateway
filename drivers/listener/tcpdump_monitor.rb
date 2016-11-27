@@ -8,7 +8,7 @@ module HaGateway
     attr_reader :params
     
     def initialize(params = {})
-      @params = params
+      super(params)
       
       `which tcpdump`
       if !$?.success?
