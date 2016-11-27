@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o pipefail
-set -o nounset
 
 print_usage() {
   echo "Usage is: $(basename $0) Interface MonitorDeviceName"
@@ -40,6 +39,6 @@ phy_index=$(iw dev "$interface" info | grep 'wiphy' | awk '{print $2}' ) || exit
 phy_interface="phy${phy_index}"
 
 iw dev "$MONITOR_NAME" del 2>/dev/null || true
-iw phy "$phy_interface" interface add "$MONITOR_NAME" type monitor
+iw phy "$phy_interface" interface add "$MONITOR_NAME" type monitor || exit_with_error "Failed to create monitor device. Make sure physical interface $phy_interface exists."
 
 ifconfig "$MONITOR_NAME" up
