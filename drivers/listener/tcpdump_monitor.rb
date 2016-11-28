@@ -30,8 +30,14 @@ module HaGateway
       args += %w(-q -p -c 1)
       
       while true 
-        Open3.popen3(*args) do |_, stdout, _, _|
+        Open3.popen3(*args) do |_, stdout, stderr, pthread|
           line = stdout.gets
+          
+          if pthread.value != 0
+            raise "Error running tcpdump. Usually means process not running as root, or the monitor device does not exist.\n" <<
+                  "Error output: #{stderr.read}"
+          end
+            
           logger.debug "Read line from tcpdump: #{line}"
           
           fire_event :read_packet
