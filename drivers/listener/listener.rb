@@ -74,12 +74,15 @@ module HaGateway
           method = http_config['method'].titleize
           request = Net::HTTP.const_get(method).new(uri)
           
-          if http_config['params']
+          if params = http_config['params']
             request.body = URI.encode_www_form(http_config['params'])
             request.content_type = 'multipart/form-data'
           end
           
-          sign_request(request)
+          params ||= {}
+          hmac_headers(request.path, params).each do |header, value|
+            request[header] = value
+          end
           
           http.request(request)
         end
