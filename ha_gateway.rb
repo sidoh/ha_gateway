@@ -22,8 +22,9 @@ module HaGateway
     before do
       if security_enabled?
         timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
-        payload   = request.env['HTTP_X_SIGNATURE_PAYLOAD']
         signature = request.env['HTTP_X_SIGNATURE']
+        signed_params = (request.put? || request.post?) ? request.POST : {}
+        payload = request.path_info + signed_params.sort.join + timestamp
 
         if [payload, timestamp, signature].any?(&:nil?)
           logger.info "Access denied: incomplete signature params."
@@ -32,8 +33,7 @@ module HaGateway
         end
 
         digest = OpenSSL::Digest.new('sha1')
-        data = (payload + timestamp)
-        hmac = OpenSSL::HMAC.hexdigest(digest, config_value(:hmac_secret), data)
+        hmac = OpenSSL::HMAC.hexdigest(digest, config_value(:hmac_secret), payload)
 
         if hmac != signature
           logger.info "Access denied: incorrect signature. Computed = '#{hmac}', provided = '#{signature}'"
