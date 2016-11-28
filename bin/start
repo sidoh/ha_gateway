@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o pipefail
-set -o nounset
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -20,14 +19,29 @@ start_process() {
   fi
 }
 
-start_process 'ha_gateway' "$DIR/run.sh"
+start_server() {
+  start_process 'ha_gateway' "$DIR/run.sh"
+}
 
-if [[ $(bundle exec ruby run_listeners.rb --requires-sudo) == "true" ]]; then
-  echo "Listeners process requires sudo access. Check log to make sure it "
-  echo "succeeded: "
-  echo "$(ha_gateway_logdir)/listeners.log"
-  
-  start_process 'listeners' "sudo $DIR/run_listeners.sh"
+start_listeners() {
+  if [[ $(bundle exec ruby run_listeners.rb --requires-sudo) == "true" ]]; then
+    echo "Listeners process requires sudo access. Check log to make sure it "
+    echo "succeeded: "
+    echo "$(ha_gateway_logdir)/listeners.log"
+    
+    start_process 'listeners' "sudo $DIR/run_listeners.sh"
+  else
+    start_process 'listeners' "$DIR/run_listeners.sh"
+  fi  
+}
+
+if [ -z "$1" ]; then
+  start_server
+  start_listeners
 else
-  start_process 'listeners' "$DIR/run_listeners.sh"
-fi  
+  if [ "$1" == "server" ]; then
+    start_server
+  elif [ "$1" == "listeners" ]; then
+    start_listeners
+  fi
+fi

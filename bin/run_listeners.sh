@@ -11,9 +11,10 @@ cd $DIR/..
 
 bundle install
 
-if [ "$EUID" -ne 0 ]; then
-  echo "WARNING: not running as root. If you're using the ARP probe driver, "
-  echo "         this process needs to run as root."
+if [ "$EUID" -ne 0 ] && [ $(bundle exec ruby run_listeners.rb --requires-sudo) == "true" ]; then
+  echo "ERROR: run_listeners.sh was not run as root. Some listener drivers "
+  echo "       require root access."
+  exit 1
 fi
 
 exec bundle exec ruby run_listeners.rb
