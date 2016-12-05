@@ -67,7 +67,7 @@ module HaGateway
 
       response = smartthings_oauth_client.auth_code.get_token(
           code, 
-          redirect_uri: smartthings_redirect_url(request)
+          redirect_uri: smartthings_redirect_url(request),
           scope: 'app'
       )
       
