@@ -8,9 +8,19 @@ module HaGateway
     def smartthings_oauth_client
       settings = config_value('smartthings')
       
+      if !settings
+        raise "Missing top-level settings key `smartthings`."
+      end
+      
+      client_id = settings['client_id']
+      client_secret = settings['client_secret']
+      
+      raise "Missing OAuth client_id" if !client_id
+      raise "Missing OAuth client_secret" if !client_secret
+      
       @@smartthings_oauth_client ||= OAuth2::Client.new(
-        settings['client_id'],
-        settings['client_secret'],
+        client_id,
+        client_secret,
         site: 'https://graph.api.smartthings.com',
         authorize_url: '/oauth/authorize',
         token_url: '/oauth/token'
