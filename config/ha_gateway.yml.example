@@ -10,7 +10,7 @@ hmac_secret: cakeisdelicious
 smartthings:
   # OAuth credentials. To get these, you'll have to create a SmartApp.
   client_id: deadbeef
-  clienet_secret: hunter2
+  client_secret: hunter2
   
 # Used to construct URLs of the site served by HaGateway. E.g. for OAuth 
 # callbacks
