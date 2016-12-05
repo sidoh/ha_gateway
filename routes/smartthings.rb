@@ -67,7 +67,7 @@ module HaGateway
 
       response = smartthings_oauth_client.auth_code.get_token(
           code, 
-          redirect_uri: "#{request.base_url}/smartthings/callback", 
+          redirect_uri: smartthings_redirect_url(request)
           scope: 'app'
       )
       
