@@ -45,8 +45,10 @@ module HaGateway
         end
       end
       
-      request.body.rewind
-      params.merge!(JSON.parse(request.body.read))
+      if request.content_type == 'application/json'
+        request.body.rewind
+        params.merge!(JSON.parse(request.body.read))
+      end
       
       logger.info "Params: #{params.inspect}"
     end
