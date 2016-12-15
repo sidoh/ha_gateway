@@ -54,10 +54,11 @@ module HaGateway
     end
 
     put '/cameras/:camera_name' do
-      param :recording,    String, in: ['true', 'false']
-      param :preset,       String
-      param :irMode,       String, in: ['on', 'off', 'auto']
-      param :remoteAccess, String, in: ['true', 'false']
+      param :recording,       String, in: %w(true false)
+      param :preset,          String
+      param :irMode,          String, in: %w(on off auto)
+      param :remoteAccess,    String, in: %w(true false)
+      param :motionDetection, Object
 
       driver = build_driver('camera', params['camera_name'])
 
@@ -75,6 +76,16 @@ module HaGateway
 
       if params['remoteAccess']
         driver.remote_access = (params['remoteAccess'] == 'true')
+      end
+      
+      if md_params = params['motionDetection']
+        if md_params['enabled']
+          driver.motion_detection = (md_params['enabled'] == 'true')
+        end
+        
+        if md_params['sensitivity']
+          logger.info driver.motion_detection_sensitivity = md_params['sensitivity'].to_i
+        end
       end
 
       status 200

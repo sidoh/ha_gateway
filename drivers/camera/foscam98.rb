@@ -9,6 +9,9 @@ module HaGateway
     attr_reader :params
 
     STREAM_BOUNDARY = 'ThisString'
+    
+    # In order of least to most sensitive
+    ORDERED_SENSITIVITIES = [4, 3, 0, 1, 2]
 
     class IrMode
       include Ruby::Enum
@@ -50,8 +53,7 @@ module HaGateway
     end
 
     def status
-      r = camera_action('getDevState')
-      Crack::XML.parse(r)['CGI_Result']
+      parse_result(camera_action('getDevState'))
     end
 
     def ir_mode=(mode)
@@ -105,8 +107,41 @@ module HaGateway
           enable: remote_access ? '1' : '0'
       )
     end
+    
+    def motion_detection=(motion_detection)
+      update_motion_detection_config(
+          'isEnable' => motion_detection ? '1' : '0'
+      )
+    end
+    
+    def motion_detection_sensitivity=(sensitivity)
+      update_motion_detection_config(
+          'sensitivity' => convert_sensitivity(sensitivity)
+      )
+    end
+    
+    def motion_detection_config
+      parse_result(camera_action('getMotionDetectConfig'))
+    end
+    
+    def update_motion_detection_config(params)
+      camera_action(
+          'setMotionDetectConfig',
+          motion_detection_config.merge(params)
+      )
+    end
 
     private
+      def parse_result(r)
+        Crack::XML.parse(r)['CGI_Result']
+      end
+      
+      def convert_sensitivity(value)
+        i = ((value/100.0) * ORDERED_SENSITIVITIES.count).floor
+        i = [ORDERED_SENSITIVITIES.count - 1, i].min
+        ORDERED_SENSITIVITIES[i]
+      end
+    
       def stream_action(action, options = {}, &block)
         options = { request_file: 'CGIStream.cgi' }.merge(options)
 
