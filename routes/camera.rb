@@ -79,12 +79,12 @@ module HaGateway
       end
       
       if md_params = params['motionDetection']
-        if md_params['enabled']
-          driver.motion_detection = (md_params['enabled'] == 'true')
+        if md_params.include? 'enabled'
+          driver.motion_detection = (md_params['enabled'].to_s == 'true')
         end
         
         if md_params['sensitivity']
-          logger.info driver.motion_detection_sensitivity = md_params['sensitivity'].to_i
+          driver.motion_detection_sensitivity = md_params['sensitivity'].to_i
         end
       end
 
