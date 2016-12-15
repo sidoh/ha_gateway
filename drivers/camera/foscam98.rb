@@ -88,16 +88,9 @@ module HaGateway
         isEnableAudio: 0
       }
 
-      # The schedule is configured by 7 vars, one for each day of the week. The value
-      # for each var is a bitmask of length 48, with each bit representing a 30
-      # minute window. If, for example, the most significant bit is set to 1, then
-      # scheduled recording for that day is enabled from 00:00:00 -- 00:29:59.
-      value = recording ? (2**48 - 1) : 0
-      (0..6).each { |i| camera_params["schedule#{i}"] = value }
-
       camera_action(
           'setScheduleRecordConfig',
-          camera_params
+          camera_params.merge(schedule_params(recording))
       )
     end
 
@@ -110,7 +103,9 @@ module HaGateway
     
     def motion_detection=(motion_detection)
       update_motion_detection_config(
-          'isEnable' => motion_detection ? '1' : '0'
+        {
+          'isEnable' => motion_detection ? '1' : '0',
+        }.merge(schedule_params(true))
       )
     end
     
@@ -132,6 +127,17 @@ module HaGateway
     end
 
     private
+      # The schedule is configured by 7 vars, one for each day of the week. The value
+      # for each var is a bitmask of length 48, with each bit representing a 30
+      # minute window. If, for example, the most significant bit is set to 1, then
+      # scheduled recording for that day is enabled from 00:00:00 -- 00:29:59.
+      def schedule_params(on)
+        schedule_params = {}
+        value = on ? (2**48 - 1) : 0
+        (0..6).each { |i| schedule_params["schedule#{i}"] = value }
+        schedule_params
+      end
+    
       def parse_result(r)
         Crack::XML.parse(r)['CGI_Result']
       end
