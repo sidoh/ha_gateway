@@ -16,15 +16,14 @@ require_relative 'helpers/config_provider'
 module HaGateway
   class App < Sinatra::Application
     before do
-      logger.info "Params: #{params.inspect}"
-    end
-    
-    before do
       if security_enabled?
+        request.body.rewind
+        body_text = request.body.read
+        
         timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
         signature = request.env['HTTP_X_SIGNATURE']
         signed_params = (request.put? || request.post?) ? request.POST : {}
-        payload = request.path_info + signed_params.sort.join + timestamp
+        payload = request.path_info + signed_params.sort.join + body_text + timestamp
 
         if [payload, timestamp, signature].any?(&:nil?)
           logger.info "Access denied: incomplete signature params."
@@ -45,6 +44,11 @@ module HaGateway
           halt 412
         end
       end
+      
+      request.body.rewind
+      params.merge!(JSON.parse(request.body.read))
+      
+      logger.info "Params: #{params.inspect}"
     end
   end
 end
