@@ -71,19 +71,6 @@ module HaGateway
       end
     end
 
-    def goto_preset(preset)
-      camera_action(
-          'ptz.cgi',
-          action: 'start',
-          code: 'GotoPreset',
-          channel: 0,
-          arg1: 0,
-          arg2: preset,
-          arg3: 0,
-          arg4: 0
-      )
-    end
-
     def recording=(recording)
       camera_params = {
         isEnable: 1,
@@ -109,6 +96,61 @@ module HaGateway
       camera_action(
           'setP2PEnable',
           enable: remote_access ? '1' : '0'
+      )
+    end
+    
+    def presets
+      result = camera_action(
+          'ptz.cgi', 
+          action: 'getPresets',
+          channel: 0
+      )
+      
+      # What a mess
+      lines = result.split("\n")
+      index_lines = lines.select { |x| x[".Index="] }
+      
+      index_lines.map do |l|
+        l.match(/\.Index=(\d+)/)[1]
+      end
+    end
+    
+    def save_preset(name)
+      camera_action(
+          'ptz.cgi',
+          action: 'start',
+          code: 'SetPreset',
+          channel: 0,
+          arg1: 0,
+          arg2: name,
+          arg3: 0,
+          arg4: 0
+      )
+    end
+    
+    def goto_preset(preset)
+      camera_action(
+          'ptz.cgi',
+          action: 'start',
+          code: 'GotoPreset',
+          channel: 0,
+          arg1: 0,
+          arg2: preset,
+          arg3: 0,
+          arg4: 0
+      )
+    end
+    
+    def delete_preset(name)
+      camera_action(
+          'ptz.cgi',
+          action: 'start',
+          code: 'ClearPreset',
+          channel: 0,
+          arg1: 0,
+          arg2: name,
+          arg3: 0,
+          arg4: 0
       )
     end
 
