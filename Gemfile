@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-json'
 gem 'sinatra-param'
+gem 'sinatra-contrib'
 gem 'activesupport'
 
 gem 'limitless-led'

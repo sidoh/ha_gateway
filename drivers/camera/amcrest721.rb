@@ -71,7 +71,7 @@ module HaGateway
       end
     end
 
-    def preset=(preset)
+    def goto_preset(preset)
       camera_action(
           'ptz.cgi',
           action: 'start',

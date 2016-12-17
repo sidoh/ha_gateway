@@ -12,6 +12,10 @@ module HaGateway
     
     # In order of least to most sensitive
     ORDERED_SENSITIVITIES = [4, 3, 0, 1, 2]
+    
+    DIRECTIONS = %w(
+      Up Down Left Right TopLeft TopRight BottomLeft BottomRight
+    )
 
     class IrMode
       include Ruby::Enum
@@ -73,13 +77,6 @@ module HaGateway
       end
     end
 
-    def preset=(preset)
-      camera_action(
-          'ptzGotoPresetPoint',
-          name: preset
-      )
-    end
-
     def recording=(recording)
       camera_params = {
         isEnable: 1,
@@ -124,6 +121,37 @@ module HaGateway
           'setMotionDetectConfig',
           motion_detection_config.merge(params)
       )
+    end
+    
+    def move(dir, amount)
+      if !DIRECTIONS.include?(dir.to_s)
+        raise "Unsupported direction: #{dir}. Supported directions: #{DIRECTIONS.join(', ')}"
+      end
+      
+      camera_action("ptzMove#{dir}")
+      
+      sleep ((amount - 1)/100.0)
+      
+      camera_action("ptzStopRun")
+    end
+    
+    def save_preset(name)
+      camera_action("ptzAddPresetPoint", name: name)
+    end
+    
+    def goto_preset(name)
+      camera_action("ptzGotoPresetPoint", name: name)
+    end
+    
+    def delete_preset(name)
+      camera_action("ptzDeletePresetPoint", name: name)
+    end
+    
+    def presets
+      r = parse_result(camera_action('getPTZPresetPointList'))
+      (0...r['cnt'].to_i).map do |i|
+        r["point#{i}"]
+      end
     end
 
     private
