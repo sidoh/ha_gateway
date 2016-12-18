@@ -10,12 +10,13 @@ module HaGateway
 
     STREAM_BOUNDARY = 'myboundary'
 
-    class IrMode
-      include Ruby::Enum
-
-      define :ON, 'on'
-      define :OFF, 'off'
-      define :AUTO, 'auto'
+    module RecordMode
+      VALUES = [
+        REGULAR = 1,
+        MOTION = 2,
+        ALARM = 4,
+        CARD = 8
+      ]
     end
 
     def initialize(params = {})
@@ -50,45 +51,15 @@ module HaGateway
     end
 
     def status
-      r = camera_action('getDevState')
-      Crack::XML.parse(r)['CGI_Result']
-    end
-
-    def ir_mode=(mode)
-      raise RuntimeError, "Unknown ir mode: #{mode}" unless IrMode.value?(mode)
-
-      autoMode = (mode == IrMode::AUTO)
-
-      camera_action(
-          'setInfraLedConfig',
-          mode: autoMode ? '0' : '1'
-      )
-
-      if !autoMode
-        camera_action(
-            action = (mode == IrMode::ON) ? 'openInfraLed' : 'closeInfraLed'
-        )
-      end
+      {}
     end
 
     def recording=(recording)
-      camera_params = {
-        isEnable: 1,
-        recordLevel: 4,
-        spaceFullMode: 0,
-        isEnableAudio: 0
-      }
-
-      # The schedule is configured by 7 vars, one for each day of the week. The value
-      # for each var is a bitmask of length 48, with each bit representing a 30
-      # minute window. If, for example, the most significant bit is set to 1, then
-      # scheduled recording for that day is enabled from 00:00:00 -- 00:29:59.
-      value = recording ? (2**48 - 1) : 0
-      (0..6).each { |i| camera_params["schedule#{i}"] = value }
-
       camera_action(
-          'setScheduleRecordConfig',
-          camera_params
+        'configManager.cgi',
+        {
+          'action' => 'setConfig'
+        }.merge(schedule_params(RecordMode::REGULAR, recording))
       )
     end
 
@@ -155,6 +126,17 @@ module HaGateway
     end
 
     private
+      def schedule_params(mode, on)
+        params = {}
+        range = "00:00:00-#{on ? "23:59:59" : "00:00:00"}"
+        
+        (0..6).each do |i|
+          params["Record[0].TimeSection[#{i}][0]"] = "#{mode} #{range}"
+        end
+        
+        params
+      end
+      
       def stream_action(endpoint, options = {}, &block)
         camera_action(endpoint, options, &block)
       end
@@ -172,7 +154,18 @@ module HaGateway
       end
 
       def camera_url(host, endpoint, params)
-        "http://#{host}/cgi-bin/#{endpoint}?#{URI.encode_www_form(params)}"
+        # Would love to use URI.encode_www_form here, but amcrest seems to barf
+        # unless it receives the raw text.
+        query_str = params.reduce([]) do |a, e|
+          k, v = e
+          k = k.gsub(' ', '%20')
+          v = v.gsub(' ', '%20')
+          
+          a.push("#{k}=#{v}")
+        end
+        query_str = query_str.join('&')
+        
+        "http://#{host}/cgi-bin/#{endpoint}?#{query_str}"
       end
   end
 end
