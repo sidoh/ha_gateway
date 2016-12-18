@@ -127,46 +127,47 @@ module HaGateway
     end
 
     private
-      def schedule_params(mode, on)
-        params = {}
-        range = "00:00:00-#{on ? "23:59:59" : "00:00:00"}"
-        
-        (0..6).each do |i|
-          params["Record[0].TimeSection[#{i}][0]"] = "#{mode} #{range}"
-        end
-        
-        params
+    
+    def schedule_params(mode, on)
+      params = {}
+      range = "00:00:00-#{on ? "23:59:59" : "00:00:00"}"
+      
+      (0..6).each do |i|
+        params["Record[0].TimeSection[#{i}][0]"] = "#{mode} #{range}"
       end
       
-      def stream_action(endpoint, options = {}, &block)
-        camera_action(endpoint, options, &block)
-      end
+      params
+    end
+    
+    def stream_action(endpoint, options = {}, &block)
+      camera_action(endpoint, options, &block)
+    end
 
-      def camera_action(endpoint, options = {}, &block)
-        uri = URI(camera_url(@hostname, endpoint, options))
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Get.new(uri)
-          request.basic_auth(@username, @password)
+    def camera_action(endpoint, options = {}, &block)
+      uri = URI(camera_url(@hostname, endpoint, options))
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        request = Net::HTTP::Get.new(uri)
+        request.basic_auth(@username, @password)
 
-          http.request(request) do |response|
-            return response.read_body(&block)
-          end
+        http.request(request) do |response|
+          return response.read_body(&block)
         end
       end
+    end
 
-      def camera_url(host, endpoint, params)
-        # Would love to use URI.encode_www_form here, but amcrest seems to barf
-        # unless it receives the raw text.
-        query_str = params.reduce([]) do |a, e|
-          k, v = e
-          k = k.gsub(' ', '%20')
-          v = v.gsub(' ', '%20')
-          
-          a.push("#{k}=#{v}")
-        end
-        query_str = query_str.join('&')
+    def camera_url(host, endpoint, params)
+      # Would love to use URI.encode_www_form here, but amcrest seems to barf
+      # unless it receives the raw text.
+      query_str = params.reduce([]) do |a, e|
+        k, v = e
+        k = k.gsub(' ', '%20')
+        v = v.gsub(' ', '%20')
         
-        "http://#{host}/cgi-bin/#{endpoint}?#{query_str}"
+        a.push("#{k}=#{v}")
       end
+      query_str = query_str.join('&')
+      
+      "http://#{host}/cgi-bin/#{endpoint}?#{query_str}"
+    end
   end
 end
