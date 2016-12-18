@@ -93,6 +93,10 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 5. `GET /cameras/:camera_name/snapshot.jpg`
 5. `GET /cameras/:camera_name/status.json`
 6. `GET /cameras/:camera_name/stream.mjpeg`
+7. `GET /cameras/:camera_name/presets`
+8. `POST /cameras/:camera_name/presets`
+9. `GET /cameras/:camera_name/presets/:preset_name`
+10. `POST /cameras/:camera_name/move`
 
 ## Supported parameters 
 
@@ -111,7 +115,9 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 1. `recording`. Can be `true` or `false`. Enables or disables recording, respectively.
 2. `preset`. Sets the position preset. These can be defined in the camera UI. Value should be the name of the preset.
 3. `irMode`. Sets infrared LED mode. Can be `auto`, `on`, or `off`.
-5. `remoteAccess`. Enables or disables the P2P feature required to access the camera remotely (though the foscam app).
+4. `remoteAccess`. Enables or disables the P2P feature required to access the camera remotely (though the foscam app).
+5. `motionDetection[enabled]`. Enables or disables motion detection.
+6. `motionDetection[sensitivity]`. Sets motion detection sensitivity (on a scale from 0 to 100, 0 being least sensitive).
 
 ### GET /cameras/:camera\_name/snapshot.jpg
 
@@ -120,6 +126,15 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 ### GET /cameras/:camera\_name/stream.mjpeg
 
 1. `length`. Limits the length of the stream to the provided value (in seconds).
+
+### POST /cameras/:camera\_name/presets
+
+1. `name`. Name of the preset.
+
+### POST /camera/:camera\_name/move
+
+1. `direction`. One of Left, Right, Up, or Down. Some cameras support mixed directions.
+2. `amount`. Amount to move. Scale between 0 and 100.
 
 #### Example
 
