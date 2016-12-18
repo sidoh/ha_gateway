@@ -125,8 +125,37 @@ module HaGateway
           arg4: 0
       )
     end
+    
+    def motion_detection=(motion_detection)
+      update_motion_detection_config(
+        {
+          'MotionDetect[0].Enable' => motion_detection
+        }.merge(schedule_params(RecordMode::MOTION, motion_detection))
+      )
+    end
+    
+    def motion_detection_sensitivity=(sensitivity)
+      update_motion_detection_config(
+          'MotionDetect[0].MotionDetectWindow[0].Sensitive' => sensitivity
+      )
+    end
+    
+    def motion_detection_config
+      parse_result(camera_action('getMotionDetectConfig'))
+    end
+    
+    def update_motion_detection_config(params)
+      camera_action(
+          'configManager.cgi',
+          { 'action' => 'setConfig' }.merge(params)
+      )
+    end
 
     private
+    
+    def convert_sensitivity(value)
+      (value/100.0)*6
+    end
     
     def schedule_params(mode, on)
       params = {}
@@ -159,7 +188,7 @@ module HaGateway
       # Would love to use URI.encode_www_form here, but amcrest seems to barf
       # unless it receives the raw text.
       query_str = params.reduce([]) do |a, e|
-        k, v = e
+        k, v = e.map(&:to_s)
         k = k.gsub(' ', '%20')
         v = v.gsub(' ', '%20')
         
