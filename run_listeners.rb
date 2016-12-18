@@ -40,11 +40,11 @@ end
 listeners = config_value('listeners') || []
 
 if options[:check_sudo]
-  has_arp_probe = listeners.any? do |_, config|
+  needs_sudo = listeners.any? do |_, config|
     %(arp_probe tcpdump_monitor).include? config['driver']
   end
   
-  puts has_arp_probe
+  puts needs_sudo
   exit
 end
 
