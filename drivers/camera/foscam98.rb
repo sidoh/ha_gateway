@@ -149,8 +149,11 @@ module HaGateway
     
     def presets
       r = parse_result(camera_action('getPTZPresetPointList'))
-      (0...r['cnt'].to_i).map do |i|
+      r = (0...r['cnt'].to_i).map do |i|
         r["point#{i}"]
+      end
+      r.reject do |x|
+        %w(TopMost BottomMost LeftMost RightMost).include?(x)
       end
     end
 
