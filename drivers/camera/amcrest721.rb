@@ -65,8 +65,9 @@ module HaGateway
 
     def remote_access=(remote_access)
       camera_action(
-          'setP2PEnable',
-          enable: remote_access ? '1' : '0'
+          'configManager.cgi',
+          'action' => 'setConfig',
+          'T2UServer.Enable' => remote_access.to_s
       )
     end
     
