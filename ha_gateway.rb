@@ -19,7 +19,7 @@ module HaGateway
     before do
       if security_enabled?
         request.body.rewind
-        body_text = request.body.read
+        body_text = request.body.read || ''
         
         timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
         signature = request.env['HTTP_X_SIGNATURE']
