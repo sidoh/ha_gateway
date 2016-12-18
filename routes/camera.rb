@@ -1,5 +1,4 @@
 require 'open3'
-require 'sinatra/namespace'
 
 module HaGateway
   class App < Sinatra::Application
