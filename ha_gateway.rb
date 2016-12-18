@@ -21,8 +21,8 @@ module HaGateway
         request.body.rewind
         body_text = request.body.read || ''
         
-        timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP']
-        signature = request.env['HTTP_X_SIGNATURE']
+        timestamp = request.env['HTTP_X_SIGNATURE_TIMESTAMP'] || 0
+        signature = request.env['HTTP_X_SIGNATURE'] || ''
         signed_params = (request.put? || request.post?) ? request.POST : {}
         payload = request.path_info + signed_params.sort.join + body_text + timestamp
 
