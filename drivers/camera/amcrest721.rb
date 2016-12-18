@@ -9,6 +9,10 @@ module HaGateway
     attr_reader :params
 
     STREAM_BOUNDARY = 'myboundary'
+    
+    DIRECTIONS = %w(
+      Up Down Left Right LeftUp RightUp LeftDown RightDown
+    )
 
     module RecordMode
       VALUES = [
@@ -148,6 +152,36 @@ module HaGateway
       camera_action(
           'configManager.cgi',
           { 'action' => 'setConfig' }.merge(params)
+      )
+    end
+    
+    def move(dir, amount)
+      if !DIRECTIONS.include?(dir.to_s)
+        raise "Unsupported direction: #{dir}. Supported directions: #{DIRECTIONS.join(', ')}"
+      end
+      
+      camera_action(
+        'ptz.cgi',
+        action: 'start',
+        code: dir,
+        channel: 0,
+        arg1: 0,
+        arg2: 8,
+        arg3: 0,
+        arg4: 0
+      )
+      
+      sleep ((amount - 1)/100.0)
+      
+      camera_action(
+        'ptz.cgi',
+        action: 'stop',
+        code: dir,
+        channel: 0,
+        arg1: 0,
+        arg2: 8,
+        arg3: 0,
+        arg4: 0
       )
     end
 
