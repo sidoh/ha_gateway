@@ -52,6 +52,11 @@ module HaGateway
       
       logger.info "Params: #{params.inspect}"
     end
+    
+    get '/:driver_type' do
+      content_type 'application/json'
+      get_devices(params[:driver_type]).keys.to_json
+    end
   end
 end
 

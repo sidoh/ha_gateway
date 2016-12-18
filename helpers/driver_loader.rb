@@ -11,6 +11,10 @@ module HaGateway
     include HaGateway::ConfigProvider
 
     @@drivers = {}
+    
+    def get_devices(type)
+      config_value(type.pluralize) || {}
+    end
 
     def build_driver(type, key)
       dk = driver_key(type, key)
@@ -18,13 +22,11 @@ module HaGateway
         return @@drivers[dk]
       end
 
-      devices = config_value(type.pluralize)
-
-      if devices.nil? or devices[key].nil?
+      if !(device = get_devices(type)[key])
         raise RuntimeError, "The #{type} \"#{key}\" is not defined. Add it to the config."
       end
-
-      build_driver_from_defn(type, key, devices[key])
+      
+      build_driver_from_defn(type, key, device)
     end
 
     def build_driver_from_defn(type, key, device)
