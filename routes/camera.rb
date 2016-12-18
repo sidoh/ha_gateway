@@ -103,6 +103,7 @@ module HaGateway
       end
       
       get '/presets' do
+        content_type 'application/json'
         driver.presets.to_json
       end
       
