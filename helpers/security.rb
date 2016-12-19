@@ -6,8 +6,17 @@ module HaGateway
   module Security
     include ConfigProvider
     
-    def hmac_headers(path, body)
+    def hmac_headers(path, params)
       timestamp = Time.now.to_i
+      body = ''
+      
+      if params.is_a?(String)
+        body = params
+      elsif params.is_a?(Hash)
+        body = params.sort.join
+      else
+        raise "Unsupported type: #{params.class}, value: #{params.inspect}"
+      end
       
       digest = OpenSSL::Digest.new('sha1')
       payload = sprintf("%s%s%s", path, body, timestamp)
