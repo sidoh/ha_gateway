@@ -48,13 +48,20 @@ You can start or stop the server with the provided scripts in `./bin`. Configure
 
 This server uses [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) signatures to verify that the caller is authorized. A shared secret is used to sign a random parameter and the timestamp. A valid request must include the following headers:
 
-1. `X-Signature-Payload`: a random string. I used UUIDs.
-2. `X-Signature-Timestamp`: a UNIX epoch timestamp.
-3. `X-Signature`: the HMAC signature of `payload + timestamp`.
+1. `X-Signature-Timestamp`: a UNIX epoch timestamp.
+2. `X-Signature`: the HMAC signature of the *payload* (explained below).
+
+The *payload* is the concatenation of:
+
+* The full request path (e.g., `/cameras/mycamera1`).
+* The request body. If the body is JSON, this is the raw JSON string. If it is a `application/x-www-form-urlencoded` encoded string, it is the string formed by taking the hash of the parameters, sorting by key, and joining by the empty string.
+* The value in `X-Signature-Timestamp`.
+
+Note that it's more straightforward to get consistent signatures when using a JSON body.
 
 The value of `X-Signature` is checked against the computed signature from the other headers. If this signature is not present or does not match, the server returns a `403: Unauthorized` error.
 
-To prevent reply attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
+To prevent replay attacks, the timestamp specified in `X-Signature-Timestamp` must be no older than 20 seconds. This requires that servers involved have up to date clocks.
 
 ## Drivers
 
@@ -99,6 +106,8 @@ By default, this server starts on port 8000 (configure in `config.ru`). Supporte
 10. `POST /cameras/:camera_name/move`
 
 ## Supported parameters 
+
+For routes that take parameters, they can either be supplied as a `application/x-www-form-urlencoded` encoded string in the body (i.e., standard HTTP parameters), or as a JSON object.
 
 ### PUT /lights/:light_name
 
