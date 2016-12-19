@@ -9,3 +9,6 @@ HaGateway::App.helpers HaGateway::Persistence
 
 require_relative 'pcap_helpers'
 HaGateway::App.helpers HaGateway::PcapHelpers
+
+require_relative 'security'
+HaGateway::App.helpers HaGateway::Security
