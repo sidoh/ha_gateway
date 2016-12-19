@@ -62,35 +62,31 @@ module HaGateway
     end
     
     def http_event(http_config, *args)
-      begin
-        url = http_config['url']
+      url = http_config['url']
+      
+      if !url.start_with?('http')
+        url = "#{config_value('site_location')}#{url}"
+      end
+      
+      uri = URI(url)
+      
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        method = http_config['method'].titleize
+        request = Net::HTTP.const_get(method).new(uri)
         
-        if !url.start_with?('http')
-          url = "#{config_value('site_location')}#{url}"
+        if params = http_config['params']
+          request.body = URI.encode_www_form(http_config['params'])
+          request.content_type = 'multipart/form-data'
         end
         
-        uri = URI(url)
+        body = params.to_json
         
-        Net::HTTP.start(uri.host, uri.port) do |http|
-          method = http_config['method'].titleize
-          request = Net::HTTP.const_get(method).new(uri)
-          
-          if params = http_config['params']
-            request.body = URI.encode_www_form(http_config['params'])
-            request.content_type = 'multipart/form-data'
-          end
-          
-          body = params.to_json
-          
-          params ||= {}
-          hmac_headers(request.path, body).each do |header, value|
-            request[header] = value
-          end
-          
-          http.request(request)
+        params ||= {}
+        hmac_headers(request.path, body).each do |header, value|
+          request[header] = value
         end
-      rescue NameError => e
-        raise "Undefined HTTP method '#{http_config['method']}': #{e}\n#{e.backtrace.join("\n")}"
+        
+        http.request(request)
       end
     end
   end
