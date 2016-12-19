@@ -6,11 +6,11 @@ module HaGateway
   module Security
     include ConfigProvider
     
-    def hmac_headers(path, params = {})
+    def hmac_headers(path, body)
       timestamp = Time.now.to_i
       
       digest = OpenSSL::Digest.new('sha1')
-      payload = sprintf("%s%s%s", path, params.sort.join, timestamp)
+      payload = sprintf("%s%s%s", path, body, timestamp)
       hmac = OpenSSL::HMAC.hexdigest(digest, config_value(:hmac_secret), payload)
       
       {

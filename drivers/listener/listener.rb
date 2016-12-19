@@ -79,8 +79,10 @@ module HaGateway
             request.content_type = 'multipart/form-data'
           end
           
+          body = params.to_json
+          
           params ||= {}
-          hmac_headers(request.path, params).each do |header, value|
+          hmac_headers(request.path, body).each do |header, value|
             request[header] = value
           end
           
