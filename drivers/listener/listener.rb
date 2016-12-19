@@ -1,6 +1,7 @@
 require 'net/http'
 require 'active_support/inflector'
 require 'logger'
+require 'json'
 
 require_relative '../../helpers/config_provider'
 require_relative '../../helpers/security'
