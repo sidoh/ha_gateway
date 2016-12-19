@@ -89,7 +89,7 @@ module HaGateway
           http.request(request)
         end
       rescue NameError => e
-        raise "Undefined HTTP method '#{http_config['method']}'"
+        raise "Undefined HTTP method '#{http_config['method']}': #{e}\n#{e.backtrace.join("\n")}"
       end
     end
   end
