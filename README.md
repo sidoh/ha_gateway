@@ -187,7 +187,7 @@ To use this integration, you'll need to do a few things:
 
 1. Set up a [SmartApp](http://docs.smartthings.com/en/latest/smartapp-developers-guide/). I'd recommend [this one](https://gist.github.com/sidoh/da36d2c1099910ef38a6021dc39a61a4).
 2. Enable OAuth on that app, and fill the Client ID and Client Secret in HaGateway's config.
-3. Run through OAuth by navigating to http://<hagatewayurl>/smartthings/authorize. You might be prompted to select which devices you'd like to enable control of.
+3. Run through OAuth by navigating to http://[hagatewayurl]/smartthings/authorize. You might be prompted to select which devices you'd like to enable control of.
 
 You can then make use of the following endpoints:
 
