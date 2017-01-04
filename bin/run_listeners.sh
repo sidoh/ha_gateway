@@ -9,7 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/locate.sh
 cd $DIR/..
 
-bundle install
+bundle install --deployment
 
 if [ "$EUID" -ne 0 ] && [ $(bundle exec ruby run_listeners.rb --requires-sudo) == "true" ]; then
   echo "ERROR: run_listeners.sh was not run as root. Some listener drivers "
