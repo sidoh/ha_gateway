@@ -11,4 +11,4 @@ cd $DIR/..
 
 bundle install
 
-exec bundle exec rackup -p 8000 -o '0.0.0.0' >>$(ha_gateway_logdir)/ha_gateway.log
+exec bundle exec rackup -p 8000 -o '0.0.0.0' >>$(ha_gateway_logdir)/ha_gateway.log 2>&1
