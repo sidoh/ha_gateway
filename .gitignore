@@ -2,3 +2,5 @@
 /tmp
 /config/ha_gateway.yml
 /config/persistence.yml
+/vendor
+/.bundle
