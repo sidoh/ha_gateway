@@ -81,11 +81,16 @@ module HaGateway
         redirect '/smartthings/authorize'
       else
         content_type 'application/json'
-        smartthings_request(:get, '/switches').to_json
+        smartthings_request(:get, '/devices').to_json
       end
     end
     
-    put '/smartthings/devices/:device_id' do
+    put '/smartthings/thermometers/:device_id' do
+      path = "/thermometers/#{params['device_id']}?temperature=#{params['temperature']}"
+      smartthings_request(:put, path).to_json
+    end
+    
+    put '/smartthings/switches/:device_id' do
       path = "/switches/#{params['device_id']}?command=#{params['command']}"
       smartthings_request(:put, path).to_json
     end
