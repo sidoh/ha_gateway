@@ -65,5 +65,6 @@ module HaGateway
         http_config['url'],
         http_config['params']
       )
+    end
   end
 end
