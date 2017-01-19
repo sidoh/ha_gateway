@@ -3,15 +3,13 @@ require 'active_support/inflector'
 require 'logger'
 require 'json'
 
-require_relative '../../helpers/config_provider'
-require_relative '../../helpers/security'
+require_relative '../../helpers/http_helpers'
 
 module HaGateway
   class Listener
-    attr_reader :params, :last_event_times
+    include HttpHelpers
     
-    include ConfigProvider
-    include Security
+    attr_reader :params, :last_event_times
     
     def initialize(params = {})
       @params = params
@@ -62,29 +60,10 @@ module HaGateway
     end
     
     def http_event(http_config, *args)
-      url = http_config['url']
-      
-      if !url.start_with?('http')
-        url = "#{config_value('site_location')}#{url}"
-      end
-      
-      uri = URI(url)
-      
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        method = http_config['method'].titleize
-        request = Net::HTTP.const_get(method).new(uri)
-        
-        if params = http_config['params']
-          request.body = URI.encode_www_form(params)
-          request.content_type = 'multipart/form-data'
-        end
-        
-        hmac_headers(request.path, params || {}).each do |header, value|
-          request[header] = value
-        end
-        
-        http.request(request)
-      end
-    end
+      send_signed_http_request(
+        http_config['method'],
+        http_config['url'],
+        http_config['params']
+      )
   end
 end
