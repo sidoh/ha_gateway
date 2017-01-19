@@ -48,7 +48,7 @@ module HaGateway
         begin
           require_relative "../drivers/#{type}/#{driver}"
         rescue LoadError => e
-          raise RuntimeError, "Undefined driver type: #{type}/#{driver}:#{e.backtrace}"
+          raise RuntimeError, "Undefined driver type: #{type}/#{driver}:#{e.backtrace.join("\n")}"
         end
 
         Object.const_get("HaGateway::#{camel_case(driver)}Driver").new(device['params'])
