@@ -76,6 +76,8 @@ Each device type has one ore more supported drivers. Every device of the same ty
 
 1. Bravtroller. Control Sony Bravia TVs. Uses [bravtroller](https://github.com/sidoh/bravtroller).
 2. UPnP. Define custom UPnP actions for both `on` and `off` actions. There's an example that controls Kodi in the example config.
+3. SmartThings. Controls a SmartThings switch.
+4. IR Blaster. Sends commands to an IR blaster running [this](https://github.com/sidoh/esp8266_ir_blaster) REST server.
 
 ### Camera
 

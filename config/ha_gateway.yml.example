@@ -88,6 +88,43 @@ switches:
                   InstanceID: 0
         "on":
           driver: noop
+          
+  # Send commands to this IR blaster REST server: 
+  # https://github.com/sidoh/esp8266_ir_blaster
+  livingroom_fan:
+    driver: ir_blaster_switch
+    params:
+      url: 'http://my-ir-blaster/ir'
+      
+      # This driver has separate parameters for the on and off commands in case
+      # there are different IR codes or desired behaviors for the two actions.
+      "on":
+        params: &FAN_IR_PARAMS 
+          type: raw
+          
+          # This is how fast the LED is flashing while "on" (in KHz). 38 KHz is 
+          # pretty common.
+          pwm_frequency: 38
+          
+          # Raw data. Encoded as microsecond delays between pulses. You can get
+          # this data from making a `GET /ir` request to the REST server and
+          # pressing the button you wish to emulate.
+          data: [ 
+            750,1800,750,1800,2000,550,2000,550,750,1800,750,1800,750,1800,
+            2000,550,750,1800,2000,550,2000,550,750,1800,750,1800,750,1800,
+            2000,550,750,1800,750,1800,2000,550,2000,550,750,1800,750,1800,
+            750,1800,2000,550,750 
+          ]
+          
+      # Notice that "off" uses the same IR parameters as "on". This example
+      # covers the case where the device has a single on/off button that cycles
+      # through different modes/speeds. In this case, "off" will send the same
+      # IR code three times with 500ms delays inbetween.
+      "off":
+        repeat: 3
+        delay_ms: 500
+        params:
+          <<: *FAN_IR_PARAMS
 
 # Foscam Cameras when using the /camera endpoint.
 cameras:
