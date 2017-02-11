@@ -61,6 +61,18 @@ lights:
       components:
         - leds
         - living_room
+        
+  # Uses the API exposed by this project:
+  #   https://github.com/sidoh/esp8266_milight_hub
+  # To control MiLight bulbs.
+  esp8266_milight:
+    driver: esp8266_milight
+    params:
+      host: esp8266-milight
+      device_id: 0x0001
+      group: 1
+      username: abc123
+      password: hunter2
 
 # Switches support on/off
 switches:
