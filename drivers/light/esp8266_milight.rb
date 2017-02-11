@@ -26,24 +26,24 @@ module HaGateway
       rgb = Color::RGB.new(r, g, b)
       
       if rgb.html == '#ffffff'
-        send(command: 'set_white')
+        send_request(command: 'set_white')
       else
         hsl = rgb.to_hsl
-        send(hue: hsl.hue, level: hsl.lightness)
+        send_request(hue: hsl.hue, level: hsl.lightness)
       end
     end
     
     def level(l)
-      send(level: l)
+      send_request(level: l)
     end
       
     def update_status(v)
-      send(status: v)
+      send_request(status: v)
     end
     
     private
     
-    def send(request_params)
+    def send_request(request_params)
       server = "http://#{params['host']}"
       endpoint = "/gateways/#{params['device_id']}/#{params['group']}"
       uri = URI("#{server}#{endpoint}")
