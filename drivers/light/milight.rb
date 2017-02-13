@@ -43,13 +43,15 @@ module HaGateway
 
     private
       def build_api
+        port = driver_params['port'] || 8899
+        
         if !driver_params['host']
           raise RuntimeError, "Must specify \"host\" parameter for Milight driver (#{driver_params.inspect})."
         elsif !driver_params['group']
           raise RuntimeError, "Must specify \"group\" parameter for Milight driver."
         end
 
-        api = LimitlessLed::Bridge.new(host: driver_params['host']).group(driver_params['group'].to_i)
+        api = LimitlessLed::Bridge.new(host: driver_params['host'], port: port).group(driver_params['group'].to_i)
 
         if driver_params['repeat_packets']
           api = HaGateway::RepeatWrapper.new(api, driver_params['repeat_packets'].to_i)
