@@ -45,7 +45,7 @@ module HaGateway
     
     def send_request(request_params)
       server = "http://#{params['host']}"
-      endpoint = "/gateways/#{params['device_id']}/#{params['group']}"
+      endpoint = "/gateways/#{params['device_id']}/#{params['bulb_type'] || 'rgbw'}/#{params['group']}"
       uri = URI("#{server}#{endpoint}")
       
       Net::HTTP.start(uri.host, uri.port) do |http|
