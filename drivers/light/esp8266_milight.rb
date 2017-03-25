@@ -28,11 +28,15 @@ module HaGateway
       if rgb.html == '#ffffff'
         send_request(command: 'set_white')
       else
-        hsl = rgb.to_hsl
-        request_params = {hue: hsl.hue}
+        hue, sat, light = rgb.to_hsl.to_a
+        request_params = {hue: hue * 360}
         
         if params['bulb_type'] == 'rgb_cct'
-          request_params[:saturation] = hsl.saturation.to_i
+          sat *= (light < 0.5) ? light : (1 - light)
+          val = light + sat
+          sat = 2 * sat / (light + sat)
+          
+          request_params[:saturation] = sat * 100
         end
         
         send_request(request_params)
