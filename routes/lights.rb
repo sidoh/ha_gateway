@@ -15,6 +15,7 @@ module HaGateway
       param :g,      Integer, range: (0..255)
       param :b,      Integer, range: (0..255)
       param :level,  Float, range: (0..100)
+      param :temperature, Integer, range: (0..100)
 
       driver = build_driver('light', params['light_name'])
 
@@ -31,6 +32,10 @@ module HaGateway
 
       if params.include?('level')
         driver.level(params['level'].to_i)
+      end
+      
+      if params.include?('temperature')
+        driver.temperature(params['temperature'].to_i)
       end
 
       status 200

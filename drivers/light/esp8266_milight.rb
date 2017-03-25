@@ -43,6 +43,10 @@ module HaGateway
       end
     end
     
+    def temperature(value)
+      send_request(temperature: value)
+    end
+    
     def level(l)
       send_request(level: l)
     end
