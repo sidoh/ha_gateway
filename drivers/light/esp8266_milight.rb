@@ -32,7 +32,7 @@ module HaGateway
         request_params = {hue: hsl.hue}
         
         if params['bulb_type'] == 'rgb_cct'
-          request_params[:saturation] = hsl.saturation
+          request_params[:saturation] = hsl.saturation.to_i
         end
         
         send_request(request_params)
