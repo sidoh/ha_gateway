@@ -197,9 +197,9 @@ You can then make use of the following endpoints:
 
 Returns a JSON object of devices. Structure is: `key -> data`, where key is a UUID used to address the device, and data includes the name and current status of the device.
 
-### PUT /smartthings/devices/:device_id
+### PUT /smartthings/:device_type/:device_id
 
-Changes the status of the specified device. Only supported parameter is `command`, which must be passed as the query string in the URL due to a bug in SmartThings. Supported values are `on`, `off`, and `toggle`.
+Changes the status of the specified device. `:device_type` should be one of `switches` or `thermometers`. Only supported parameter is `command`, which must be passed as the query string in the URL due to a bug in SmartThings. Supported values are `on`, `off`, and `toggle`.
 
 ### GET /smartthings/routines
 
