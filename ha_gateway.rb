@@ -14,6 +14,7 @@ require 'open-uri'
 
 require_relative 'helpers/config_provider'
 require_relative 'helpers/security'
+require_relative 'lib/mqtt_client_factory'
 
 module HaGateway
   class App < Sinatra::Application
@@ -21,15 +22,15 @@ module HaGateway
       if security_enabled?
         validate_request(request, params)
       end
-      
+
       if request.content_type == 'application/json'
         request.body.rewind
         params.merge!(JSON.parse(request.body.read))
       end
-      
+
       logger.info "Params: #{params.inspect}"
     end
-    
+
     get '/:driver_type' do
       content_type 'application/json'
       get_devices(params[:driver_type]).keys.to_json
