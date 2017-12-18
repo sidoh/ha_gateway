@@ -42,6 +42,7 @@ GEM
       rainbow
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    mqtt (0.5.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -113,6 +114,7 @@ DEPENDENCIES
   easy_upnp
   ledenet_api (>= 1.0.0)
   limitless-led
+  mqtt
   net-ping
   oauth2
   puma

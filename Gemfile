@@ -11,6 +11,7 @@ gem 'ledenet_api', '>= 1.0.0'
 gem 'color'
 gem 'easy_upnp'
 gem 'oauth2'
+gem 'mqtt'
 
 gem 'bravtroller', '~> 1.0'
 gem 'net-ping'

@@ -6,18 +6,26 @@ require_hmac_signatures: false
 # The secret to use when generating/validating HMAC signatures.
 hmac_secret: cakeisdelicious
 
-# You'll have to fill this out to use SmartThings integration features. 
+# You'll have to fill this out to use SmartThings integration features.
 smartthings:
   # OAuth credentials. To get these, you'll have to create a SmartApp.
   client_id: deadbeef
   client_secret: hunter2
-  
-# Used to construct URLs of the site served by HaGateway. E.g. for OAuth 
+
+# Used to construct URLs of the site served by HaGateway. E.g. for OAuth
 # callbacks
 site_location: http://localhost:8000
 
 # Path for file used to store persistent data.
 persistence_path: config/persistence.yml
+
+# MQTT brokers to connect to
+mqtt_brokers:
+  mymqtt:
+    host: mymqtt-broker.com
+    port: 1883
+    username: admin
+    password: hunter2
 
 # Lights are assumed to be RGB and support on/off, level, and RGB color.
 lights:
@@ -61,18 +69,27 @@ lights:
       components:
         - leds
         - living_room
-        
+
   # Uses the API exposed by this project:
   #   https://github.com/sidoh/esp8266_milight_hub
   # To control MiLight bulbs.
   esp8266_milight:
     driver: esp8266_milight
     params:
+      broker
       host: esp8266-milight
       device_id: 0x0001
       group: 1
       username: abc123
       password: hunter2
+
+  # Publishes the same JSON body as the previous example to an MQTT topic
+  esp8266_milight_mqtt:
+    driver: esp8266_milight
+    params:
+      transport: mqtt
+      broker: mymqtt
+      topic: milight/0x0001/rgb_cct/1
 
 # Switches support on/off
 switches:
@@ -100,34 +117,34 @@ switches:
                   InstanceID: 0
         "on":
           driver: noop
-          
-  # Send commands to this IR blaster REST server: 
+
+  # Send commands to this IR blaster REST server:
   # https://github.com/sidoh/esp8266_ir_blaster
   livingroom_fan:
     driver: ir_blaster_switch
     params:
       url: 'http://my-ir-blaster/ir'
-      
+
       # This driver has separate parameters for the on and off commands in case
       # there are different IR codes or desired behaviors for the two actions.
       "on":
-        params: &FAN_IR_PARAMS 
+        params: &FAN_IR_PARAMS
           type: raw
-          
-          # This is how fast the LED is flashing while "on" (in KHz). 38 KHz is 
+
+          # This is how fast the LED is flashing while "on" (in KHz). 38 KHz is
           # pretty common.
           pwm_frequency: 38
-          
+
           # Raw data. Encoded as microsecond delays between pulses. You can get
           # this data from making a `GET /ir` request to the REST server and
           # pressing the button you wish to emulate.
-          data: [ 
+          data: [
             750,1800,750,1800,2000,550,2000,550,750,1800,750,1800,750,1800,
             2000,550,750,1800,2000,550,2000,550,750,1800,750,1800,750,1800,
             2000,550,750,1800,750,1800,2000,550,2000,550,750,1800,750,1800,
-            750,1800,2000,550,750 
+            750,1800,2000,550,750
           ]
-          
+
       # Notice that "off" uses the same IR parameters as "on". This example
       # covers the case where the device has a single on/off button that cycles
       # through different modes/speeds. In this case, "off" will send the same
@@ -155,44 +172,44 @@ cameras:
       host: camera2.mynetwork.net
       username: myusername
       password: mypassword
-      
+
 # Listeners are generally things that listen for events and allow you to run
 # actions when they're picked up. For example, the arp_probe driver allows you
 # to detect when a device with a certain hardware address joins the network.
 # Useful for Amazon Dash buttons.
 listeners:
   amazon_dash_button1:
-    # The arp_probe driver listens for ARP queries. Devices will send out ARP 
-    # queries when they join a network. This is the typical hack used to 
-    # re-purpose Amazon Dash buttons. You could also use it to detect, 
+    # The arp_probe driver listens for ARP queries. Devices will send out ARP
+    # queries when they join a network. This is the typical hack used to
+    # re-purpose Amazon Dash buttons. You could also use it to detect,
     # for example, when your smartphone connects to your network.
     driver: arp_probe
-    
+
     params:
       # Hardware address of the device to listen for.
       hw_addr: aa:bb:cc:dd:ee:ff
-      
-      # Optional: Which interface to listen on. Defaults to whatever pcap 
+
+      # Optional: Which interface to listen on. Defaults to whatever pcap
       # decides.
       # interface: eth0
-      
-      # Optional: milliseconds that ARP queries from the same device are 
+
+      # Optional: milliseconds that ARP queries from the same device are
       # considered duplicates. Defaults to 0
       # dedup_threshold: 5000
-      
+
       events:
         probe_received:
           # Fires an HTTP request when the event is received.
           http:
             method: PUT
-            
+
             # URL called will be filled in with site_location. Requests will be
             # signed with security credentials.
             url: /lights/all_lights
-            
+
             params:
               status: 'off'
-              
+
   amazon_dash_button2:
     driver: arp_probe
     params:
@@ -202,8 +219,8 @@ listeners:
           http:
             method: GET
             url: /smartthings/routines/good_night
-          
-  # This driver relies on having a dedicated wireless device that supports 
+
+  # This driver relies on having a dedicated wireless device that supports
   # monitor mode. It's adapted from this example:
   #
   #   https://github.com/ridiculousfish/one-second-dash
@@ -222,18 +239,24 @@ listeners:
     params:
       # Hardware address of the dash button.
       hw_addr: cc:dd:ee:ff:aa:bb
-      
-      # Name of the virtual monitor interface. If you used 
+
+      # Name of the virtual monitor interface. If you used
       # ./bin/create_monitor_interface, this will be the second argument you
       # passed that script.
       interface: DashMonitor
-      
+
       # There will always be 5-10 packets each time you press the button. You'll
       # probably need to have this set to something reasonable.
       dedup_threshold: 5000
-      
+
       events:
         probe_received:
+          mqtt:
+            broker: mymqtt
+            topic: lights/downstairs
+            # Encoded as JSON
+            message:
+              status: on
           http:
             method: PUT
             url: /switches/upstairs_tv
