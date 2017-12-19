@@ -9,7 +9,7 @@ gem 'activesupport'
 gem 'limitless-led'
 gem 'ledenet_api', '>= 1.0.0'
 gem 'color'
-gem 'easy_upnp'
+gem 'easy_upnp', '>= 1.1.12'
 gem 'oauth2'
 gem 'mqtt'
 
