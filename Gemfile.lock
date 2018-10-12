@@ -47,7 +47,7 @@ GEM
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-ping (2.0.1)
-    nokogiri (1.8.1)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     oauth2 (1.2.0)
@@ -57,8 +57,8 @@ GEM
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
     puma (3.6.0)
-    rack (1.6.8)
-    rack-protection (1.5.3)
+    rack (1.6.10)
+    rack-protection (1.5.5)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -116,8 +116,10 @@ DEPENDENCIES
   limitless-led
   mqtt
   net-ping
+  nokogiri (~> 1.8)
   oauth2
   puma
+  rack-protection (~> 1.5)
   ruby-enum
   ruby-pcap
   sinatra

@@ -5,6 +5,8 @@ gem 'sinatra-json'
 gem 'sinatra-param'
 gem 'sinatra-contrib'
 gem 'activesupport'
+gem 'nokogiri', '~> 1.8'
+gem 'rack-protection', '~> 1.5'
 
 gem 'limitless-led'
 gem 'ledenet_api', '>= 1.0.0'
